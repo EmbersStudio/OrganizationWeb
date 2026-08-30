@@ -1,8 +1,12 @@
-# Nestjs specific
+# NestJS specific
 /dist
 /node_modules
 /build
 /tmp
+
+# Cloudflare / Wrangler
+.wrangler
+.dev.vars
 
 # Logs
 logs
