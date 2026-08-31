@@ -1,0 +1,13 @@
+# Cloudflare Workers Static Assets 响应头规则
+# 参考: https://developers.cloudflare.com/workers/static-assets/headers
+# 构建期由 OpenNext 将 public/ 复制到 .open-next/assets/，此文件随之生效。
+
+# Next.js 构建产物（/_next/static/*）文件名带内容哈希，可永久缓存（浏览器 + CDN 边缘）
+/_next/static/*
+  Cache-Control: public,max-age=31536000,immutable
+
+# 非哈希的公共 JS/CSS（更新后 URL 不变），使用较短的浏览器缓存即可
+/scripts/*
+  Cache-Control: public,max-age=86400
+/styles/*
+  Cache-Control: public,max-age=86400

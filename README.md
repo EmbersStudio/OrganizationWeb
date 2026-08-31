@@ -187,6 +187,11 @@ export const cacheConfig = {
 - **实时抓取模式**：启动时设置环境变量 `USE_CACHE=false`，接口始终实时执行脚本，不读写缓存。
 - 本地开发无 KV 时自动使用内存模拟；部署后使用 `wrangler.toml` 绑定的真实 KV 命名空间。
 
+## 性能优化
+
+首屏加载与静态资源缓存优化（Cloudflare Web Analytics / RUM 异步化、缓存规则、验证方法）
+见 [docs/PERFORMANCE.md](docs/PERFORMANCE.md)。
+
 ## 代码规范
 
 - **格式化**：Prettier（`.prettierrc`：singleQuote、trailingComma: 'all'、printWidth: 100 等）。
