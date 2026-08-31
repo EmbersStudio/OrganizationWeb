@@ -1,13 +1,7 @@
 /**
  * 爬虫脚本通用返回类型：允许任意 JSON 可序列化的结构。
  */
-export type ScraperResult =
-  | Record<string, unknown>
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+export type ScraperResult = Record<string, unknown> | unknown[] | string | number | boolean | null;
 
 /**
  * 爬虫脚本接口。

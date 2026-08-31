@@ -30,13 +30,13 @@ public/scripts/             # 公共 JS 脚本（global.js、...）
 2. 新建路由目录与组件，例如 `src/app/your-page/page.tsx`：
 
    ```tsx
-   import type { Metadata } from "next";
-   import { loadPageHTML } from "@/lib/html-loader";
+   import type { Metadata } from 'next';
+   import { loadPageHTML } from '@/lib/html-loader';
 
-   export const metadata: Metadata = { title: "你的页面" };
+   export const metadata: Metadata = { title: '你的页面' };
 
    export default async function YourPage() {
-     const html = await loadPageHTML("your-page");
+     const html = await loadPageHTML('your-page');
      return <main dangerouslySetInnerHTML={{ __html: html }} />;
    }
    ```

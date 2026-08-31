@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
-import Script from "next/script";
-import type { ReactNode } from "react";
+import type { Metadata } from 'next';
+import Script from 'next/script';
+import type { ReactNode } from 'react';
 
 // 全局样式：可在此自由添加更多 CSS 文件（如 src/styles/custom/*.css）
-import "@/styles/globals.css";
-import "@/styles/custom/theme.css";
+import '@/styles/globals.css';
+import '@/styles/custom/theme.css';
 
 export const metadata: Metadata = {
   title: {
-    default: "Organization Web",
-    template: "%s | Organization Web",
+    default: 'Organization Web',
+    template: '%s | Organization Web',
   },
-  description: "基于 Next.js (App Router) + OpenNext 的全栈网站",
+  description: '基于 Next.js (App Router) + OpenNext 的全栈网站',
 };
 
 /**

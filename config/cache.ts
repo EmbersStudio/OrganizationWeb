@@ -7,7 +7,7 @@
  */
 export const cacheConfig = {
   /** 是否启用缓存（默认启用） */
-  enabled: process.env.USE_CACHE !== "false",
+  enabled: process.env.USE_CACHE !== 'false',
   /** 缓存有效期（秒） */
   ttl: 3600,
 } as const;

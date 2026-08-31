@@ -30,19 +30,19 @@ interface ScraperScript {
 1. 在 `src/scripts/` 下新建 `my-scraper.ts`：
 
    ```ts
-   import type { ScraperScript } from "./base-scraper";
+   import type { ScraperScript } from './base-scraper';
 
    export const myScraper: ScraperScript = {
-     name: "my",
+     name: 'my',
      enabled: true,
-     description: "我的脚本：抓取某网站数据",
+     description: '我的脚本：抓取某网站数据',
      async scrape() {
        // 示例：使用 axios + cheerio 抓取（需先 npm install axios cheerio）
        // const { default: axios } = await import('axios');
        // const { load } = await import('cheerio');
        // const { data: html } = await axios.get('https://example.com');
        // const $ = load(html);
-       return { title: "抓取结果", url: "https://example.com" };
+       return { title: '抓取结果', url: 'https://example.com' };
      },
    };
    ```
@@ -50,8 +50,8 @@ interface ScraperScript {
 2. 注册到 `config/scripts.ts`：
 
    ```ts
-   import { exampleScraper } from "@/scripts/example-scraper";
-   import { myScraper } from "@/scripts/my-scraper";
+   import { exampleScraper } from '@/scripts/example-scraper';
+   import { myScraper } from '@/scripts/my-scraper';
 
    export const scripts = [exampleScraper, myScraper];
    ```
