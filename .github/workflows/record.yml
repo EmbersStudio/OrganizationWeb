@@ -13,14 +13,14 @@ jobs:
             contents: write
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Update last commit timestamp
               run: |
                   # 获取当前 UTC 时间（ISO 8601 格式）
-                  echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > last_commit_time
+                  echo $(date -u +"%Y-%m-%dT%H:%M:%SZ") > .github/last_commit_time
 
             - name: Commit and push timestamp
               run: |
