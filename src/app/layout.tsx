@@ -8,10 +8,10 @@ import '@/styles/custom/theme.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Organization Web',
-    template: '%s | Organization Web',
+    default: 'EmbersStudio',
+    template: '%s | EmbersStudio',
   },
-  description: '基于 Next.js (App Router) + OpenNext 的全栈网站',
+  description: 'From the Embers, we build.',
 };
 
 /**

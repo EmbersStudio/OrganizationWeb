@@ -1,23 +1,25 @@
-/* 自定义主题样式：在此自由添加任意全局样式 */
-.page-container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+:root {
+  /* 颜色系统 */
+  --color-text-primary: #f5f5f7;
+  --color-text-muted: #aab3c4;
+  --color-text-footer: #5c6474;
+  --color-bg-start: #1c2233;
+  --color-bg-mid: #0d0f17;
+  --color-bg-end: #07080d;
+  --color-accent-start: #ffffff;
+  --color-accent-end: #ffb86c;
+
+  /* 排版系统 */
+  --font-family-base: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-hero: clamp(3rem, 10vw, 6.5rem);
+  --font-size-lead: clamp(1.1rem, 3vw, 1.6rem);
+  --font-size-small: 0.8rem;
+
+  /* 间距与特效 */
+  --spacing-lg: 1.25rem;
+  --letter-spacing-wide: 0.35em;
 }
 
-.page-title {
-  font-size: 2rem;
-  margin: 0 0 1rem;
-}
-
-.page-lead {
-  font-size: 1.05rem;
-}
-
-.page-link {
-  font-weight: 600;
-}
-
-.page-error {
-  color: #cf222e;
+:root {
+  color-scheme: dark;
 }
