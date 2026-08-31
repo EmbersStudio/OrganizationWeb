@@ -1,4 +1,4 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare';
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
  * 简化版 KV 命名空间接口（与 Cloudflare KVNamespace 结构兼容，
@@ -6,7 +6,11 @@ import { getCloudflareContext } from '@opennextjs/cloudflare';
  */
 export interface KVLike {
   get(key: string): Promise<string | null>;
-  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
+  put(
+    key: string,
+    value: string,
+    options?: { expirationTtl?: number },
+  ): Promise<void>;
 }
 
 declare global {
@@ -17,7 +21,7 @@ declare global {
 }
 
 /** KV 绑定名称，需与 wrangler.toml 中的 [[kv_namespaces]] binding 保持一致 */
-const KV_BINDING_NAME = 'DATA_CACHE';
+const KV_BINDING_NAME = "DATA_CACHE";
 
 /** 内存模拟存储的条目 */
 interface MemoryEntry {
@@ -47,7 +51,11 @@ class MemoryKVStore {
   }
 
   /** 写入值，可选 TTL（秒） */
-  async put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void> {
+  async put(
+    key: string,
+    value: string,
+    options?: { expirationTtl?: number },
+  ): Promise<void> {
     const expiresAt = options?.expirationTtl
       ? Date.now() + options.expirationTtl * 1000
       : Number.POSITIVE_INFINITY;
@@ -86,7 +94,9 @@ async function resolveBinding(): Promise<KVLike | null> {
       resolvedBinding = binding;
       return binding;
     }
-    console.warn(`[KV] Binding "${KV_BINDING_NAME}" 未在环境中配置，改用内存模拟`);
+    console.warn(
+      `[KV] Binding "${KV_BINDING_NAME}" 未在环境中配置，改用内存模拟`,
+    );
   } catch (error) {
     console.log(
       `[KV] Cloudflare context 不可用（${error instanceof Error ? error.message : String(error)}），改用内存模拟`,
@@ -107,11 +117,11 @@ export async function kvGet(key: string): Promise<string | null> {
   const kv = await resolveBinding();
   if (kv) {
     const value = await kv.get(key);
-    console.log(`[KV] get "${key}" -> ${value === null ? 'miss' : 'hit'}`);
+    console.log(`[KV] get "${key}" -> ${value === null ? "miss" : "hit"}`);
     return value;
   }
   const value = await getMemoryStore().get(key);
-  console.log(`[KV] memory get "${key}" -> ${value === null ? 'miss' : 'hit'}`);
+  console.log(`[KV] memory get "${key}" -> ${value === null ? "miss" : "hit"}`);
   return value;
 }
 
@@ -122,13 +132,25 @@ export async function kvGet(key: string): Promise<string | null> {
  * @param value 缓存值（建议传入 JSON 字符串）
  * @param ttlSeconds 过期时间（秒）；不传则永不过期
  */
-export async function kvSet(key: string, value: string, ttlSeconds?: number): Promise<void> {
+export async function kvSet(
+  key: string,
+  value: string,
+  ttlSeconds?: number,
+): Promise<void> {
   const kv = await resolveBinding();
   if (kv) {
-    await kv.put(key, value, ttlSeconds ? { expirationTtl: ttlSeconds } : undefined);
-    console.log(`[KV] put "${key}" (ttl=${ttlSeconds ?? 'none'}s)`);
+    await kv.put(
+      key,
+      value,
+      ttlSeconds ? { expirationTtl: ttlSeconds } : undefined,
+    );
+    console.log(`[KV] put "${key}" (ttl=${ttlSeconds ?? "none"}s)`);
     return;
   }
-  await getMemoryStore().put(key, value, ttlSeconds ? { expirationTtl: ttlSeconds } : undefined);
-  console.log(`[KV] memory put "${key}" (ttl=${ttlSeconds ?? 'none'}s)`);
+  await getMemoryStore().put(
+    key,
+    value,
+    ttlSeconds ? { expirationTtl: ttlSeconds } : undefined,
+  );
+  console.log(`[KV] memory put "${key}" (ttl=${ttlSeconds ?? "none"}s)`);
 }

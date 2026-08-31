@@ -9,7 +9,7 @@
 
 ```ts
 export const cacheConfig = {
-  enabled: process.env.USE_CACHE !== 'false', // 默认启用
+  enabled: process.env.USE_CACHE !== "false", // 默认启用
   ttl: 3600, // 秒
 };
 ```

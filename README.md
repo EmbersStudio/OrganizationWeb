@@ -105,13 +105,13 @@ npm run format      # Prettier 自动格式化
 2. 新建路由目录与组件，例如 `src/app/your-page/page.tsx`：
 
    ```tsx
-   import type { Metadata } from 'next';
-   import { loadPageHTML } from '@/lib/html-loader';
+   import type { Metadata } from "next";
+   import { loadPageHTML } from "@/lib/html-loader";
 
-   export const metadata: Metadata = { title: '你的页面' };
+   export const metadata: Metadata = { title: "你的页面" };
 
    export default async function YourPage() {
-     const html = await loadPageHTML('your-page');
+     const html = await loadPageHTML("your-page");
      return <main dangerouslySetInnerHTML={{ __html: html }} />;
    }
    ```
@@ -129,19 +129,19 @@ npm run format      # Prettier 自动格式化
 1. 在 `src/scripts/` 新建 `my-scraper.ts`，实现 `ScraperScript` 接口：
 
    ```ts
-   import type { ScraperScript } from './base-scraper';
+   import type { ScraperScript } from "./base-scraper";
 
    export const myScraper: ScraperScript = {
-     name: 'my',
+     name: "my",
      enabled: true,
-     description: '抓取示例网站',
+     description: "抓取示例网站",
      async scrape() {
        // 需要时安装 axios / cheerio 后使用
        // const { default: axios } = await import('axios');
        // const { load } = await import('cheerio');
        // const { data: html } = await axios.get('https://example.com');
        // const $ = load(html);
-       return { title: '抓取结果' };
+       return { title: "抓取结果" };
      },
    };
    ```
@@ -157,7 +157,7 @@ npm run format      # Prettier 自动格式化
 
 ```ts
 export const cacheConfig = {
-  enabled: process.env.USE_CACHE !== 'false', // 默认启用缓存
+  enabled: process.env.USE_CACHE !== "false", // 默认启用缓存
   ttl: 3600, // 缓存有效期（秒）
 };
 ```

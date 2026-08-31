@@ -1,4 +1,4 @@
-import { defineCloudflareConfig } from '@opennextjs/cloudflare';
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
 /**
  * OpenNext 适配器配置（Cloudflare）。

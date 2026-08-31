@@ -19,7 +19,7 @@
 2. 在 `src/app/layout.tsx` 中引入：
 
    ```tsx
-   import Script from 'next/script';
+   import Script from "next/script";
    // ...
    <Script src="/scripts/xxx.js" strategy="afterInteractive" />;
    ```

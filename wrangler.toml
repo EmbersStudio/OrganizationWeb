@@ -7,9 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 # OpenNext 构建产物中的静态资源（部署到 Cloudflare Pages/Workers 静态资源）
 assets = { directory = ".open-next/assets", binding = "ASSETS" }
 
-# KV 命名空间绑定（占位）
-# 部署前请在 Cloudflare Dashboard 创建 KV 命名空间，并将下方 id 替换为真实 id。
-# 本地开发（npm run preview）时 wrangler 会自动使用本地模拟 KV。
+# KV 命名空间绑定
 [[kv_namespaces]]
 binding = "DATA_CACHE"
-id = "00000000000000000000000000000000"
+id = "e00145bf69d847f8a4f97740f74d35c6"

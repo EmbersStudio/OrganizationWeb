@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-import { cacheConfig } from '@config/cache';
-import { scripts } from '@config/scripts';
-import { getCachedOrFetch } from '@/lib/cache-manager';
+import { cacheConfig } from "@config/cache";
+import { scripts } from "@config/scripts";
+import { getCachedOrFetch } from "@/lib/cache-manager";
 
 /** 强制动态渲染，确保每次请求都走服务端逻辑 */
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 /** 缓存键前缀 */
-const CACHE_KEY_PREFIX = 'api:data:';
+const CACHE_KEY_PREFIX = "api:data:";
 
 /**
  * 数据接口：GET /api/data?script=<name>
@@ -21,18 +21,24 @@ const CACHE_KEY_PREFIX = 'api:data:';
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const scriptName = url.searchParams.get('script') ?? 'example';
+  const scriptName = url.searchParams.get("script") ?? "example";
   console.log(`[API] GET /api/data?script=${scriptName}`);
 
   // 1. 校验脚本是否存在/启用
   const script = scripts.find((item) => item.name === scriptName);
   if (!script) {
     console.warn(`[API] 脚本不存在: ${scriptName}`);
-    return NextResponse.json({ error: `Unknown script: ${scriptName}` }, { status: 404 });
+    return NextResponse.json(
+      { error: `Unknown script: ${scriptName}` },
+      { status: 404 },
+    );
   }
   if (!script.enabled) {
     console.warn(`[API] 脚本已禁用: ${scriptName}`);
-    return NextResponse.json({ error: `Script disabled: ${scriptName}` }, { status: 403 });
+    return NextResponse.json(
+      { error: `Script disabled: ${scriptName}` },
+      { status: 403 },
+    );
   }
 
   // 2. 缓存优先逻辑（cache-manager 封装）
@@ -44,12 +50,15 @@ export async function GET(request: Request) {
       cacheConfig.ttl,
     );
     console.log(`[API] 请求完成 (script=${scriptName}, source=${source})`);
-    return NextResponse.json({ source, data }, { headers: { 'X-Cache-Source': source } });
+    return NextResponse.json(
+      { source, data },
+      { headers: { "X-Cache-Source": source } },
+    );
   } catch (error) {
     console.error(`[API] 脚本执行失败: ${scriptName}`, error);
     return NextResponse.json(
       {
-        error: 'Script execution failed',
+        error: "Script execution failed",
         detail: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },

@@ -1,5 +1,5 @@
-import { exampleScraper } from '@/scripts/example-scraper';
-import type { ScraperScript } from '@/scripts/base-scraper';
+import { exampleScraper } from "@/scripts/example-scraper";
+import type { ScraperScript } from "@/scripts/base-scraper";
 
 /**
  * 爬虫脚本注册表。

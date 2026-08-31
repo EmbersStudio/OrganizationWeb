@@ -1,8 +1,8 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { promises as fs } from "node:fs";
+import path from "node:path";
 
 /** 页面 HTML 文件所在目录（相对于项目根目录） */
-const PAGES_DIR = path.join(process.cwd(), 'src', 'content', 'pages');
+const PAGES_DIR = path.join(process.cwd(), "src", "content", "pages");
 
 /** 允许的页面名称格式（防止路径穿越） */
 const PAGE_NAME_PATTERN = /^[a-z0-9_-]+$/i;
@@ -15,9 +15,9 @@ const PAGE_NAME_PATTERN = /^[a-z0-9_-]+$/i;
  */
 async function loadFromManifest(pageName: string): Promise<string | null> {
   try {
-    const { pages } = await import('@/content/pages.generated');
+    const { pages } = await import("@/content/pages.generated");
     const html = pages[pageName];
-    if (typeof html === 'string') {
+    if (typeof html === "string") {
       console.log(`[HTML Loader] Page loaded from manifest: ${pageName}`);
       return html;
     }
@@ -48,8 +48,10 @@ export async function loadPageHTML(pageName: string): Promise<string> {
 
   // 1) 文件系统读取（本地开发优先）
   try {
-    const html = await fs.readFile(filePath, 'utf8');
-    console.log(`[HTML Loader] Page loaded: ${pageName} (${html.length} chars)`);
+    const html = await fs.readFile(filePath, "utf8");
+    console.log(
+      `[HTML Loader] Page loaded: ${pageName} (${html.length} chars)`,
+    );
     return html;
   } catch (fsError) {
     console.log(
