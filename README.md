@@ -2,7 +2,7 @@
 
 基于 **Next.js (App Router) + TypeScript + OpenNext** 的全栈网站，
 前端页面内容由独立 HTML 文件驱动，后端提供可扩展的数据抓取脚本框架，
-并通过 **Cloudflare KV** 实现可切换的缓存机制，最终部署到 **Cloudflare Workers/Pages**。
+并通过 **Cloudflare KV** 实现可切换的缓存机制，最终部署到 **Cloudflare Workers**。
 
 ## 技术栈
 
