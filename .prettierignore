@@ -5,3 +5,6 @@ dist
 .wrangler
 package-lock.json
 next-env.d.ts
+
+# 构建期生成文件
+src/content/pages.generated.ts
