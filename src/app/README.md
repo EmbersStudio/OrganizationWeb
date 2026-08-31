@@ -57,6 +57,33 @@ public/scripts/             # 公共 JS 脚本（global.js、...）
   `<Script src="/scripts/xxx.js" strategy="afterInteractive" />` 引入。
 - 页面级脚本：在对应 `page.tsx` 中按需引入 `<Script>`。
 
+## 页面级 CSS / JS（按页加载）
+
+除全局样式/脚本外，每个页面可以在自己的 HTML 文件顶部声明**专属资源**，
+只有该页面会加载它们：
+
+```html
+<!-- src/content/pages/your-page.html -->
+<link rel="stylesheet" href="/styles/pages/your-page.css" />
+<script src="/scripts/pages/your-page.js"></script>
+<!-- ...页面内容片段... -->
+```
+
+- **CSS**：文件放在 `public/styles/pages/<page>.css`，经 `<link>` 声明，
+  仅当访问该页面时浏览器才会请求并应用（CSS 文件按页面独立，互不影响）。
+- **JS**：文件放在 `public/scripts/pages/<page>.js`，经 `<script src>` 声明；
+  `HtmlPage` 会通过 Next 的 `<Script>` 组件挂载，保证脚本能正常执行
+  （写在 HTML 里的内联 `<script>` 无法通过 `dangerouslySetInnerHTML` 执行，会被忽略并告警）。
+
+对应关系：
+
+| 页面 HTML                      | 页面 CSS 文件                   | 页面 JS 文件                    |
+| ------------------------------ | ------------------------------- | ------------------------------- |
+| `src/content/pages/home.html`  | `public/styles/pages/home.css`  | `public/scripts/pages/home.js`  |
+| `src/content/pages/about.html` | `public/styles/pages/about.css` | `public/scripts/pages/about.js` |
+
+> 资源声明标签会被 `src/lib/html-loader.ts` 自动提取，不会残留在渲染内容中。
+
 ## 注意事项
 
 - `dangerouslySetInnerHTML` 不会对内容做 XSS 过滤。当前 HTML 文件由项目自身维护，

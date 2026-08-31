@@ -1,12 +1,197 @@
-<section class="page about-page">
-  <h1 class="page-title">关于本站</h1>
+<link rel="stylesheet" href="/styles/pages/about.css" />
+<script src="/scripts/pages/about.js"></script>
+
+<div class="about-card">
+  <!-- ===== 页头 ===== -->
+  <h1 class="page-title"><span class="embers-glow"></span>关于 · 余烬工作室</h1>
+  <div class="page-sub">⚙️ EmbersStudio — 始于余烬，重塑新生</div>
+
+  <!-- ===== 描述 ===== -->
   <p class="page-lead">
-    本站使用独立的 HTML 文件承载页面内容：
-    <code>src/content/pages/</code> 目录下每个 <code>.html</code> 文件对应一个页面。
+    <strong>EmbersStudio</strong> 是由 CrimsonSeraph 发起的个人开发者联盟，
+    以技术驱动为核心。我们相信优秀的工具和作品源于对技术的热爱与对细节的执着。
+    目前团队由三位核心成员组成，致力于全栈、游戏、桌面及底层工具的开发。
   </p>
-  <p class="page-lead">
-    添加新页面只需三步：新建 HTML 文件、新建对应的
+
+  <p class="page-lead" style="border-left-color: rgba(255, 255, 255, 0.08)">
+    本站源代码位于 <code>src/content/pages/</code> 目录， 每个
+    <code>.html</code> 文件对应一个独立页面。 添加新页面只需三步：新建 HTML 文件、新建对应的
     <code>page.tsx</code>、注册路由。
   </p>
-  <p><a class="page-link" href="/">返回首页 →</a></p>
-</section>
+
+  <!-- ===== 信息网格 ===== -->
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="label">🌐 全栈开发</span>
+      <span class="value">Next.js · Node.js · TypeScript</span>
+    </div>
+    <div class="info-item">
+      <span class="label">🎮 游戏开发</span>
+      <span class="value">Unreal Engine (C++) · Godot (GDScript)</span>
+    </div>
+    <div class="info-item">
+      <span class="label">🖥️ 桌面 &amp; 底层</span>
+      <span class="value">Qt (C++ / PyQt) · C++ · Python</span>
+    </div>
+    <div class="info-item">
+      <span class="label">🎨 前端交互</span>
+      <span class="value">Vue 3 · CSS · JavaScript</span>
+    </div>
+    <div class="info-item" style="grid-column: 1/-1">
+      <span class="label">📦 当前主项目</span>
+      <span class="value">
+        <a href="https://github.com/EmbersStudio/OrganizationWeb" target="_blank" rel="noopener">
+          OrganizationWeb
+        </a>
+        &nbsp;·&nbsp; Next.js + TypeScript 组织官网（开发中）
+      </span>
+    </div>
+  </div>
+
+  <!-- ===== 成员 ===== -->
+  <div class="members-section">
+    <h3>
+      👥 核心成员
+      <span>— 贡献者 &amp; 维护者</span>
+    </h3>
+    <div class="member-row">
+      <!-- CrimsonSeraph -->
+      <div class="member-chip">
+        <img src="https://github.com/CrimsonSeraph.png" alt="CrimsonSeraph" loading="lazy" />
+        <span class="name">CrimsonSeraph</span>
+        <span class="badge">🛠️ 创始人</span>
+        <span class="role">应用 &amp; 游戏开发</span>
+      </div>
+
+      <!-- kinguang3 -->
+      <div class="member-chip">
+        <img src="https://github.com/kinguang3.png" alt="kinguang3" loading="lazy" />
+        <span class="name">kinguang3</span>
+        <span class="badge">💻 核心开发</span>
+        <span class="role">Next.js</span>
+      </div>
+
+      <!-- Angvannor -->
+      <div class="member-chip">
+        <img src="https://github.com/Angvannor.png" alt="Angvannor" loading="lazy" />
+        <span class="name">Angvannor</span>
+        <span class="badge">🎨 前端开发</span>
+        <span class="role">Vue 3 · CSS · JS</span>
+      </div>
+    </div>
+    <div style="margin-top: 0.6rem; font-size: 0.85rem; color: #7a7570; padding-left: 0.2rem">
+      💡 动态贡献者墙请见
+      <a
+        href="https://github.com/EmbersStudio/OrganizationWeb/graphs/contributors"
+        target="_blank"
+        rel="noopener"
+        style="
+          color: #e8924e;
+          text-decoration: none;
+          border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+        "
+      >
+        GitHub 贡献者
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== 技术栈标签 ===== -->
+  <div class="tech-tags">
+    <span class="tech-tag">Next.js</span>
+    <span class="tech-tag">TypeScript</span>
+    <span class="tech-tag">Node.js</span>
+    <span class="tech-tag">Python</span>
+    <span class="tech-tag">C++</span>
+    <span class="tech-tag">Unreal Engine</span>
+    <span class="tech-tag">Godot</span>
+    <span class="tech-tag">Qt</span>
+    <span class="tech-tag">Vue 3</span>
+    <span class="tech-tag">Git</span>
+    <span class="tech-tag">GitHub</span>
+  </div>
+
+  <!-- ===== 分隔 ===== -->
+  <div class="divider"></div>
+
+  <!-- ===== 理念引用 ===== -->
+  <div class="quote-block">
+    <p>“From the Embers, we build.”</p>
+    <div class="attrib">— 每一次重构都是新生，每一行代码都承载着对品质的追求。</div>
+  </div>
+
+  <!-- ===== 联系与链接 ===== -->
+  <div
+    style="
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem 1.5rem;
+      margin-top: 1.2rem;
+    "
+  >
+    <div
+      style="display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; font-size: 0.9rem; color: #8a8580"
+    >
+      <span
+        >📧
+        <a
+          href="mailto:CrimsonSeraph.QwQ@gmail.com"
+          style="
+            color: #e8924e;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+          "
+          >CrimsonSeraph.QwQ@gmail.com</a
+        ></span
+      >
+      <span
+        >🐦
+        <a
+          href="https://x.com/CrimSeraph_QwQ"
+          target="_blank"
+          rel="noopener"
+          style="
+            color: #e8924e;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+          "
+          >X / Twitter</a
+        ></span
+      >
+      <span
+        >🌐
+        <a
+          href="https://embers-studio.crimsonseraph.top"
+          target="_blank"
+          rel="noopener"
+          style="
+            color: #e8924e;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+          "
+          >embers-studio.crimsonseraph.top</a
+        ></span
+      >
+    </div>
+    <a class="page-link" href="/" style="margin-top: 0">← 返回首页</a>
+  </div>
+
+  <!-- 底部小字 -->
+  <div
+    style="
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 0.75rem;
+      color: #5f5a55;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.2rem;
+    "
+  >
+    <span>© 2026 EmbersStudio · 余烬工作室</span>
+    <span>⚡ 开源 · 各项目采用不同许可证，详见仓库 LICENSE</span>
+  </div>
+</div>
