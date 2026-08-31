@@ -1,17 +1,15 @@
-name = "ashes-studio"
-main = "src/main.ts"
+# Cloudflare 部署配置（OpenNext 适配器）
+name = "organization-web"
+main = ".open-next/worker.js"
 compatibility_date = "2026-08-01"
 compatibility_flags = ["nodejs_compat"]
 
-# 部署后通过 workers.dev 提供的子域名访问
-workers_dev = true
+# OpenNext 构建产物中的静态资源（部署到 Cloudflare Pages/Workers 静态资源）
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
 
-# 将 NestJS 中按需加载（lazy require）的可选模块指向空桩文件，
-# 避免 wrangler/esbuild 在打包 Worker 时因找不到这些未使用模块而报错。
-# 本应用只使用首页，不使用校验/序列化/微服务/WebSocket/Express 之外的平台。
-[alias]
-"class-validator" = "./src/shims/empty.ts"
-"class-transformer" = "./src/shims/empty.ts"
-"@nestjs/websockets/socket-module" = "./src/shims/empty.ts"
-"@nestjs/microservices/microservices-module" = "./src/shims/empty.ts"
-"@nestjs/microservices" = "./src/shims/empty.ts"
+# KV 命名空间绑定（占位）
+# 部署前请在 Cloudflare Dashboard 创建 KV 命名空间，并将下方 id 替换为真实 id。
+# 本地开发（npm run preview）时 wrangler 会自动使用本地模拟 KV。
+[[kv_namespaces]]
+binding = "DATA_CACHE"
+id = "00000000000000000000000000000000"

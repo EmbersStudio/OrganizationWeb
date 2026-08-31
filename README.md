@@ -1,45 +1,34 @@
-# AshesStudio 官网
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-AshesStudio 组织的极简品牌官网，基于 **NestJS** 构建，并完整适配 **Cloudflare Workers** 部署。
+## Getting Started
 
-## 技术栈
-
-- NestJS（@nestjs/core + @nestjs/platform-express 官方平台适配器）
-- Cloudflare 官方 cloudflare:node 桥接（nodejs_compat 下 node:http 服务器 + fetch 入口）
-- Cloudflare Workers（wrangler 4，ESM 格式，nodejs_compat）
-- TypeScript
-
-## 本地开发
+First, run the development server:
 
 ```bash
-npm install
-
-# 方式一：Cloudflare Workers 模拟环境（推荐，验证部署效果）
-npm run cf:dev        # 访问 http://localhost:8787
-
-# 方式二：普通 Node 环境（NestJS 传统启动方式）
-npm run start         # 访问 http://localhost:3000
-npm run start:dev     # 监听模式
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-首页会展示组织名称 **AshesStudio** 与品牌标语 **Creating Digital Wonders**。
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 部署到 Cloudflare
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```bash
-npm run cf:deploy
-```
+## Learn More
 
-## 项目结构
+To learn more about Next.js, take a look at the following resources:
 
-```
-├── wrangler.toml        # Cloudflare Workers 配置（入口 main、compatibility_date）
-├── src/
-│   ├── main.ts          # Workers 入口：导出标准 fetch 处理器
-│   ├── bootstrap.ts     # 本地 Node 启动入口（npm run start）
-│   ├── app.module.ts
-│   ├── app.controller.ts
-│   ├── app.service.ts
-│   └── shims/empty.ts   # wrangler 打包用空桩（NestJS 可选 lazy 依赖）
-└── package.json         # 含 cf:dev / cf:deploy 脚本
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
