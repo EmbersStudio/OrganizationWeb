@@ -105,13 +105,13 @@ npm run format      # Prettier 自动格式化
 2. 新建路由目录与组件，例如 `src/app/your-page/page.tsx`：
 
    ```tsx
-   import type { Metadata } from "next";
-   import { loadPageHTML } from "@/lib/html-loader";
+   import type { Metadata } from 'next';
+   import { loadPageHTML } from '@/lib/html-loader';
 
-   export const metadata: Metadata = { title: "你的页面" };
+   export const metadata: Metadata = { title: '你的页面' };
 
    export default async function YourPage() {
-     const html = await loadPageHTML("your-page");
+     const html = await loadPageHTML('your-page');
      return <main dangerouslySetInnerHTML={{ __html: html }} />;
    }
    ```
@@ -129,19 +129,19 @@ npm run format      # Prettier 自动格式化
 1. 在 `src/scripts/` 新建 `my-scraper.ts`，实现 `ScraperScript` 接口：
 
    ```ts
-   import type { ScraperScript } from "./base-scraper";
+   import type { ScraperScript } from './base-scraper';
 
    export const myScraper: ScraperScript = {
-     name: "my",
+     name: 'my',
      enabled: true,
-     description: "抓取示例网站",
+     description: '抓取示例网站',
      async scrape() {
        // 需要时安装 axios / cheerio 后使用
        // const { default: axios } = await import('axios');
        // const { load } = await import('cheerio');
        // const { data: html } = await axios.get('https://example.com');
        // const $ = load(html);
-       return { title: "抓取结果" };
+       return { title: '抓取结果' };
      },
    };
    ```
@@ -157,7 +157,7 @@ npm run format      # Prettier 自动格式化
 
 ```ts
 export const cacheConfig = {
-  enabled: process.env.USE_CACHE !== "false", // 默认启用缓存
+  enabled: process.env.USE_CACHE !== 'false', // 默认启用缓存
   ttl: 3600, // 缓存有效期（秒）
 };
 ```
@@ -178,6 +178,24 @@ export const cacheConfig = {
 ## 部署到 Cloudflare
 
 前置条件：已安装 Node.js、npm，并已登录 wrangler（`npx wrangler login`）。
+
+### 0. 推荐：Cloudflare Workers Builds（Git 集成）一键部署
+
+在 Cloudflare Dashboard 中创建 **Workers** 项目并连接 Git 仓库后，按以下设置：
+
+| 配置项   | 值                       | 说明                                                               |
+| -------- | ------------------------ | ------------------------------------------------------------------ |
+| 根目录   | `/`（留空）              | **必须指向仓库根目录**（含 package.json 的位置），不是构建产物目录 |
+| 构建命令 | `npm run build:opennext` | 生成 `.open-next/worker.js` 与静态资源                             |
+| 部署命令 | `npx wrangler deploy`    | 读取 wrangler.toml，上传 Worker（含 assets 与 KV 绑定）            |
+| 构建变量 | `NODE_VERSION=22`        | Next.js 16 要求 Node >= 20.9，推荐使用 22                          |
+
+> ⚠️ 常见错误：把「根目录」填成 `.open-next` 会导致
+> `Failed: root directory not found`。
+> `.open-next` 是**构建产物**（已被 `.gitignore` 忽略），克隆仓库时并不存在，
+> 所以 Cloudflare 在「克隆 → 定位根目录」阶段就会失败。
+> 根目录必须指向源码目录（`/`）；构建命令执行成功后 `.open-next/` 才会生成，
+> 供部署命令使用。
 
 ### 1. 创建 KV 命名空间并绑定
 

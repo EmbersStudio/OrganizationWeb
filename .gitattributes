@@ -1,0 +1,2 @@
+# 统一文本文件行尾：仓库内存储 LF，检出为 CRLF（Windows 友好）
+* text=auto eol=crlf

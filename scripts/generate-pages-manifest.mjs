@@ -9,39 +9,33 @@
  * 用法：node scripts/generate-pages-manifest.mjs
  * （已通过 package.json 的 predev / prebuild 钩子自动执行）
  */
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const pagesDir = path.join(root, "src", "content", "pages");
-const outFile = path.join(root, "src", "content", "pages.generated.ts");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const pagesDir = path.join(root, 'src', 'content', 'pages');
+const outFile = path.join(root, 'src', 'content', 'pages.generated.ts');
 
 const files = readdirSync(pagesDir)
-  .filter((f) => f.endsWith(".html"))
+  .filter((f) => f.endsWith('.html'))
   .sort();
 
 const lines = [];
-lines.push(
-  "// 本文件由 scripts/generate-pages-manifest.mjs 自动生成，请勿手动编辑。",
-);
-lines.push(
-  "// 内容来源：src/content/pages/*.html（编辑 HTML 后重新构建即可生效）。",
-);
-lines.push("");
-lines.push(
-  "/** 页面名称 → HTML 内容映射（构建期生成，供 Cloudflare Worker 运行时使用） */",
-);
-lines.push("export const pages: Record<string, string> = {");
+lines.push('// 本文件由 scripts/generate-pages-manifest.mjs 自动生成，请勿手动编辑。');
+lines.push('// 内容来源：src/content/pages/*.html（编辑 HTML 后重新构建即可生效）。');
+lines.push('');
+lines.push('/** 页面名称 → HTML 内容映射（构建期生成，供 Cloudflare Worker 运行时使用） */');
+lines.push('export const pages: Record<string, string> = {');
 for (const file of files) {
-  const name = path.basename(file, ".html");
-  const html = readFileSync(path.join(pagesDir, file), "utf8");
+  const name = path.basename(file, '.html');
+  const html = readFileSync(path.join(pagesDir, file), 'utf8').replace(/\r\n/g, '\n');
   lines.push(`  ${JSON.stringify(name)}: ${JSON.stringify(html)},`);
 }
-lines.push("};");
-lines.push("");
+lines.push('};');
+lines.push('');
 
-writeFileSync(outFile, lines.join("\n"));
+writeFileSync(outFile, lines.join('\n'));
 console.log(
-  `[pages-manifest] Generated ${outFile} with ${files.length} page(s): ${files.join(", ")}`,
+  `[pages-manifest] Generated ${outFile} with ${files.length} page(s): ${files.join(', ')}`,
 );
