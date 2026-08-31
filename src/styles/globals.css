@@ -1,0 +1,30 @@
+/* 全局基础样式 */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
+  color: #1f2328;
+  background: #f6f8fa;
+  line-height: 1.6;
+}
+
+a {
+  color: #0969da;
+}
