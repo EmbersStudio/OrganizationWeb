@@ -50,6 +50,22 @@ jobs:
             echo "Skipping deployment. Last commit was only $DIFF seconds ago."
           fi
 
+      - name: Cache node_modules
+        if: steps.check.outputs.deploy_needed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        if: steps.check.outputs.deploy_needed == 'true'
+        run: npm ci
+
+      - name: Build project
+        if: steps.check.outputs.deploy_needed == 'true'
+        run: npm run build:opennext
+
       - name: Deploy to Cloudflare
         if: steps.check.outputs.deploy_needed == 'true'
         uses: cloudflare/wrangler-action@v4
