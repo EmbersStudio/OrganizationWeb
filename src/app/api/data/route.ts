@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       cacheConfig.ttl,
     );
     console.log(`[API] 请求完成 (script=${scriptName}, source=${source})`);
-    return NextResponse.json({ source, data });
+    return NextResponse.json({ source, data }, { headers: { 'X-Cache-Source': source } });
   } catch (error) {
     console.error(`[API] 脚本执行失败: ${scriptName}`, error);
     return NextResponse.json(

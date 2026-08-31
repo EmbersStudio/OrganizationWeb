@@ -219,6 +219,17 @@ npm run deploy
 - `GET /api/data?script=example` 首次返回 `source: "live"`，再次返回 `source: "cache"`；
 - 查看 Worker 日志中的 `[API]`、`[KV]`、`[CacheManager]` 前缀输出确认缓存生效。
 
+## 环境变量
+
+参考 `.env.example`（已加入 git，可提交）：
+
+| 变量        | 默认值       | 说明                                                   |
+| ----------- | ------------ | ------------------------------------------------------ |
+| `USE_CACHE` | `true`       | 缓存开关；设为 `false` 切换为实时抓取模式              |
+| `CACHE_TTL` | `3600`（秒） | 缓存有效期（当前未接入，TTL 固定于 `config/cache.ts`） |
+
+> `.env`、`.env.*` 已被 gitignore；仅 `.env.example` 会被提交。
+
 ## 已知注意事项
 
 - **Windows**：OpenNext 官方提示与 Windows 存在部分兼容性问题，本地预览可能较慢；
