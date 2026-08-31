@@ -27,8 +27,12 @@
 │   ├── cache.ts                # 缓存配置（USE_CACHE / TTL）
 │   ├── scripts.ts              # 爬虫脚本注册表
 │   └── README.md
-├── public/                     # 静态资源（图片、字体、公共 JS）
-│   ├── scripts/global.js
+├── public/                     # 静态资源（图片、字体、公共/页面级 JS 与 CSS）
+│   ├── scripts/
+│   │   ├── global.js           # 全局脚本（所有页面加载）
+│   │   └── pages/              # 页面级 JS（仅对应页面加载）
+│   ├── styles/
+│   │   └── pages/              # 页面级 CSS（仅对应页面加载）
 │   └── README.md
 ├── scripts/
 │   └── generate-pages-manifest.mjs  # 构建期生成页面 HTML 清单
@@ -39,6 +43,8 @@
 │   │   ├── about/page.tsx      # 关于页 → content/pages/about.html
 │   │   ├── api/data/route.ts   # 数据接口（缓存优先 + 爬虫）
 │   │   └── README.md
+│   ├── components/
+│   │   └── html-page.tsx       # 通用 HTML 页面渲染组件（挂载页面级 CSS/JS）
 │   ├── content/
 │   │   ├── pages/              # 页面 HTML 文件（唯一内容源）
 │   │   │   ├── home.html
@@ -106,21 +112,36 @@ npm run format      # Prettier 自动格式化
 
    ```tsx
    import type { Metadata } from 'next';
-   import { loadPageHTML } from '@/lib/html-loader';
+   import HtmlPage from '@/components/html-page';
 
    export const metadata: Metadata = { title: '你的页面' };
 
-   export default async function YourPage() {
-     const html = await loadPageHTML('your-page');
-     return <main dangerouslySetInnerHTML={{ __html: html }} />;
+   export default function YourPage() {
+     return <HtmlPage page="your-page" />;
    }
    ```
 
 3. 访问 `/your-page` 即可。动态路由（如 `/posts/[slug]`）同理，在 `[slug]/page.tsx`
-   中把路由参数传入 `loadPageHTML(slug)`（loader 已做名称合法性校验）。
+   中把路由参数传给 `HtmlPage`（loader 已做名称合法性校验）。
 
 - **添加全局样式**：在 `src/styles/custom/` 新建 `*.css` 并在 `layout.tsx` 中 import。
 - **添加公共 JS**：在 `public/scripts/` 新建 `*.js` 并在 `layout.tsx` 中用 `<Script>` 引入。
+
+### 页面级 CSS / JS（按页加载）
+
+除全局资源外，每个页面可以在自己的 HTML 顶部声明**专属资源**，只有访问该页面才会加载：
+
+```html
+<!-- src/content/pages/your-page.html -->
+<link rel="stylesheet" href="/styles/pages/your-page.css" />
+<script src="/scripts/pages/your-page.js"></script>
+<!-- ...页面内容片段... -->
+```
+
+- CSS 放在 `public/styles/pages/<page>.css`，JS 放在 `public/scripts/pages/<page>.js`；
+- 声明标签由 `src/lib/html-loader.ts` 自动提取，经 `HtmlPage` 挂载（JS 通过 Next `<Script>`
+  保证执行），不会残留在渲染内容中；
+- 示例：首页 `home.html` → `home.css`；关于页 `about.html` → `about.css` + `about.js`。
 
 > 详细说明见 `src/app/README.md`。
 
