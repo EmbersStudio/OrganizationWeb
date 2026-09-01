@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+:root {
+  color-scheme: dark;
+}
+
 body {
   font-family:
     'Segoe UI',
@@ -13,9 +17,6 @@ body {
     Arial,
     sans-serif;
   color: #f5f5f7;
-}
-
-.page {
-  text-align: center;
-  padding: 2rem;
+  background-color: #0b0b0e;
+  line-height: 1.6;
 }
