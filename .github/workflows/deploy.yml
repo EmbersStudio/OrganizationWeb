@@ -13,27 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      # 验证 GH_TOKEN 是否有效
-      - name: Validate GH_TOKEN
-        run: |
-          gh auth status --hostname github.com
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      # 读取仓库变量中存储的上次构建 commit
+      # 验证内置 Token 是否可用（无需额外验证，因为 GitHub 保证有效）
       - name: Get last build commit from variable
         id: var
         run: |
           LAST_COMMIT=$(gh variable get LAST_BUILD_COMMIT --repo ${{ github.repository }} 2>/dev/null || echo "")
           echo "last_commit=$LAST_COMMIT" >> $GITHUB_OUTPUT
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if deployment is needed
         id: check
@@ -83,4 +78,4 @@ jobs:
         run: |
           gh variable set LAST_BUILD_COMMIT --body "${{ steps.check.outputs.current_commit }}" --repo ${{ github.repository }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
