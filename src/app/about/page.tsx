@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import AboutPage from '@/pages/about/AboutPage';
+import AboutPage from '@/views/about/AboutPage';
 import { getPagePath, requirePageRoute } from '@/router/routes';
 
 /** 关于页路由注册项（来自 src/router/routes.tsx） */
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * 关于页：渲染 src/pages/about/AboutPage（原 about.html 迁移），
+ * 关于页：渲染 src/views/about/AboutPage（原 about.html 迁移），
  * “返回首页”链接目标取自路由注册表。
  */
 export default function About() {

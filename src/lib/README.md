@@ -1,17 +1,12 @@
 # 核心库说明（src/lib）
 
-| 文件               | 作用                                                               |
-| ------------------ | ------------------------------------------------------------------ |
-| `html-loader.ts`   | 服务端加载页面 HTML（本地读文件系统，Cloudflare 环境读构建期清单） |
-| `kv.ts`            | KV 操作封装：Cloudflare 环境使用真实 KV，本地开发自动切换内存模拟  |
-| `cache-manager.ts` | 缓存优先（cache-first）逻辑：命中返回缓存，未命中抓取并写缓存      |
+| 文件               | 作用                                                              |
+| ------------------ | ----------------------------------------------------------------- |
+| `kv.ts`            | KV 操作封装：Cloudflare 环境使用真实 KV，本地开发自动切换内存模拟 |
+| `cache-manager.ts` | 缓存优先（cache-first）逻辑：命中返回缓存，未命中抓取并写缓存     |
 
-## html-loader.ts
-
-- `loadPageHTML(pageName): Promise<string>`
-- 优先从 `src/content/pages/<name>.html` 读取；
-- Worker 环境文件不可读时，回退到构建期生成的 `src/content/pages.generated.ts` 清单；
-- 页面名做合法性校验（`/^[a-z0-9_-]+$/i`），防止路径穿越。
+> 迁移说明：原 `html-loader.ts`（HTML 页面加载器）已随「纯 TypeScript + TSX 组件」迁移移除，
+> 页面内容现由 `src/views/**` 的 TSX 组件直接渲染。
 
 ## kv.ts
 

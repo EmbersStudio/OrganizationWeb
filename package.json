@@ -14,10 +14,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit",
-    "predev": "npm run generate:pages",
-    "prebuild": "npm run generate:pages",
-    "generate:pages": "node scripts/generate-pages-manifest.mjs"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.3.3",

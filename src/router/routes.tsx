@@ -14,7 +14,7 @@ export interface PageRouteInfo {
  * 页面注册表：所有页面的唯一登记入口。
  *
  * 新增页面流程：
- * 1. 在 src/pages/<name>/ 创建页面组件与 CSS Module；
+ * 1. 在 src/views/<name>/ 创建页面组件与 CSS Module；
  * 2. 在本数组追加注册项（id / path / title / description）；
  * 3. 在 src/app/<route>/page.tsx 中通过 requirePageRoute('<id>') 获取元信息，
  *    并直接 import 对应组件渲染。

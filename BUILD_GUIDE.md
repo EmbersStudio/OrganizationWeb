@@ -18,7 +18,7 @@
 ├── scripts/                   # 构建辅助脚本
 ├── src/
 │   ├── app/                   # Next.js App Router 路由层（page.tsx / layout.tsx / api/）
-│   ├── pages/                 # ★ 页面组件：每个页面一个文件夹
+│   ├── views/                 # ★ 页面组件：每个页面一个文件夹
 │   │   ├── home/
 │   │   │   ├── HomePage.tsx          # 页面组件
 │   │   │   └── HomePage.module.css   # 页面专属样式（CSS Modules）
@@ -50,6 +50,10 @@
 
 > 入口说明：Next.js App Router 中 `src/app/layout.tsx` 等价于 Vite 项目的
 > `main.tsx`——全局样式在此导入，根组件与全局监听（如快捷键）在此挂载。
+>
+> ⚠️ 为什么用 `src/views` 而不是 `src/pages`：`src/pages` 是 Next.js **Pages Router**
+> 的保留目录，放入非页面文件会触发旧版路由类型校验失败；本项目基于 App Router，
+> 因此页面组件统一放在 `src/views`（目录职责不变，仅规避保留目录冲突）。
 
 ---
 
@@ -60,11 +64,11 @@
 ### 1. 创建页面文件夹与组件
 
 ```bash
-mkdir -p src/pages/projects
+mkdir -p src/views/projects
 ```
 
 ```tsx
-// src/pages/projects/ProjectsPage.tsx
+// src/views/projects/ProjectsPage.tsx
 import styles from './ProjectsPage.module.css';
 
 interface ProjectsPageProps {
@@ -85,7 +89,7 @@ export default function ProjectsPage({ homeHref = '/' }: ProjectsPageProps) {
 ```
 
 ```css
-/* src/pages/projects/ProjectsPage.module.css（类名 camelCase） */
+/* src/views/projects/ProjectsPage.module.css（类名 camelCase） */
 .page {
   min-height: 100vh;
   display: flex;
@@ -119,7 +123,7 @@ mkdir -p src/app/projects
 // src/app/projects/page.tsx
 import type { Metadata } from 'next';
 
-import ProjectsPage from '@/pages/projects/ProjectsPage';
+import ProjectsPage from '@/views/projects/ProjectsPage';
 import { getPagePath, requirePageRoute } from '@/router/routes';
 
 const route = requirePageRoute('projects');

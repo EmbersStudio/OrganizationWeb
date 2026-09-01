@@ -53,7 +53,7 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
 
 主要特性：
 
-- **纯 TypeScript 页面组件**：`src/pages/` 下每个页面一个文件夹（TSX + CSS Module），路由注册表统一管理页面元信息；
+- **纯 TypeScript 页面组件**：`src/views/` 下每个页面一个文件夹（TSX + CSS Module），路由注册表统一管理页面元信息；
 - **缓存优先数据接口**：`GET /api/data?script=<name>` 先查 KV，命中直接返回；未命中执行脚本并写缓存；
 - **爬虫脚本框架**：在 `src/scripts/` 实现 `ScraperScript` 并注册到 `config/scripts.ts` 即可扩展；
 - **键盘快捷键**：`src/router/keymap.ts` 一处配置，全局监听跳转页面；
@@ -159,7 +159,7 @@ curl "https://<your-domain>/api/data?script=example"
 ├── public/                # 静态资源（图片/字体/_headers）
 ├── src/
 │   ├── app/               # Next.js App Router（page.tsx / layout.tsx / api/）
-│   ├── pages/             # 页面组件（每个页面一个文件夹：TSX + CSS Module）
+│   ├── views/             # 页面组件（每个页面一个文件夹：TSX + CSS Module）
 │   ├── components/        # 公共组件
 │   ├── hooks/             # 自定义 Hooks
 │   ├── utils/             # 工具函数

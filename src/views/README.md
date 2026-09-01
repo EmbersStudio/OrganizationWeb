@@ -1,4 +1,4 @@
-# 页面组件目录（src/pages）
+# 页面组件目录（src/views）
 
 每个页面一个文件夹，文件夹内包含：
 
@@ -11,3 +11,7 @@
 
 > 说明：Next.js App Router 下 `src/app/page.tsx` 即页面入口（等价于 Vite 的 `main.tsx` +
 > 路由表），页面 UI 与样式统一放在本目录，保证「一个页面 = 一个文件夹」。
+>
+> ⚠️ 为什么是 `src/views` 而不是 `src/pages`：`src/pages` 是 Next.js **Pages Router**
+> 的保留目录，会触发旧版页面路由类型校验；本项目使用 App Router，故使用 `src/views`
+> 承载页面组件（见 BUILD_GUIDE.md）。

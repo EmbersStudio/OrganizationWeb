@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import HomePage from '@/pages/home/HomePage';
+import HomePage from '@/views/home/HomePage';
 import { getPagePath, requirePageRoute } from '@/router/routes';
 
 /** 首页路由注册项（来自 src/router/routes.tsx） */
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * 首页：渲染 src/pages/home/HomePage（原 home.html 迁移），
+ * 首页：渲染 src/views/home/HomePage（原 home.html 迁移），
  * “了解更多”链接目标取自路由注册表。
  */
 export default function Home() {

@@ -7,7 +7,7 @@
 
 > 迁移说明：旧的手动脚本（`public/scripts/**`）与页面级 CSS（`public/styles/pages/**`）
 > 已随「纯 TypeScript + CSS Modules」改造移除。所有前端逻辑与样式均来自
-> `src/pages` / `src/components` / `src/hooks`（经 Next.js 打包），
+> `src/views` / `src/components` / `src/hooks`（经 Next.js 打包），
 > 本目录仅保留真正需要原样发布的静态文件与边缘配置。
 
 ## 常用用途
@@ -23,5 +23,5 @@
 1. 将文件放入 `public/` 下对应目录（`images/`、`fonts/` 等）；
 2. 在代码中以根路径引用：`/images/logo.png`。
 
-> 组件内的图片、字体等资源如无特殊需要，也可直接放在 `src/pages/**` 同目录下
+> 组件内的图片、字体等资源如无特殊需要，也可直接放在 `src/views/**` 同目录下
 > 由构建工具处理（自动哈希、缓存友好）。

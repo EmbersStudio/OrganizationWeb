@@ -5,7 +5,7 @@
 
 新增页面流程：
 
-1. 在 `src/pages/<name>/` 创建页面组件（TSX + CSS Module）；
+1. 在 `src/views/<name>/` 创建页面组件（TSX + CSS Module）；
 2. 在 `routes.tsx` 的 `PAGE_REGISTRY` 追加注册项；
 3. 在 `src/app/<route>/page.tsx` 中 `requirePageRoute('<id>')` 获取元信息并渲染组件。
 
