@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
+import KeyboardNavigator from '@/components/keyboard-navigator';
+
 // 全局样式：可在此自由添加更多 CSS 文件（如 src/styles/custom/*.css）
 import '@/styles/globals.css';
 import '@/styles/custom/theme.css';
@@ -25,7 +27,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        {children}
+        <KeyboardNavigator />
+      </body>
     </html>
   );
 }
