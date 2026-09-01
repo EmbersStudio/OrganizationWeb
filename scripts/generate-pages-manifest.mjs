@@ -36,6 +36,4 @@ lines.push('};');
 lines.push('');
 
 writeFileSync(outFile, lines.join('\n'));
-console.log(
-  `[pages-manifest] Generated ${outFile} with ${files.length} page(s): ${files.join(', ')}`,
-);
+console.log(`[pages-manifest] Generated ${outFile} with ${files.length} page(s): ${files.join(', ')}`);

@@ -48,9 +48,7 @@ class MemoryKVStore {
 
   /** 写入值，可选 TTL（秒） */
   async put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void> {
-    const expiresAt = options?.expirationTtl
-      ? Date.now() + options.expirationTtl * 1000
-      : Number.POSITIVE_INFINITY;
+    const expiresAt = options?.expirationTtl ? Date.now() + options.expirationTtl * 1000 : Number.POSITIVE_INFINITY;
     this.store.set(key, { value, expiresAt });
   }
 }

@@ -62,9 +62,7 @@ function extractScripts(raw: string): { html: string; scriptSrcs: string[] } {
       scriptSrcs.push(src[1]);
       return '';
     }
-    console.warn(
-      '[HTML Loader] 忽略内联 <script>：无法通过 dangerouslySetInnerHTML 执行，请移到独立文件并用 src 引用',
-    );
+    console.warn('[HTML Loader] 忽略内联 <script>：无法通过 dangerouslySetInnerHTML 执行，请移到独立文件并用 src 引用');
     return '';
   });
   return { html, scriptSrcs };

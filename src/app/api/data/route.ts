@@ -38,11 +38,7 @@ export async function GET(request: Request) {
   // 2. 缓存优先逻辑（cache-manager 封装）
   try {
     const cacheKey = `${CACHE_KEY_PREFIX}${scriptName}`;
-    const { source, data } = await getCachedOrFetch(
-      cacheKey,
-      () => script.scrape(),
-      cacheConfig.ttl,
-    );
+    const { source, data } = await getCachedOrFetch(cacheKey, () => script.scrape(), cacheConfig.ttl);
     console.log(`[API] 请求完成 (script=${scriptName}, source=${source})`);
     return NextResponse.json({ source, data }, { headers: { 'X-Cache-Source': source } });
   } catch (error) {
