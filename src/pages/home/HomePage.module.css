@@ -1,0 +1,61 @@
+.bodyWrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(1200px 600px at 20% 0%, #1c2233 0%, #0d0f17 55%, #07080d 100%);
+}
+
+.brand {
+  font-size: clamp(3rem, 10vw, 6.5rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(120deg, #ffffff, #ffb86c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.slogan {
+  margin-top: 1.25rem;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #aab3c4;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1.25rem;
+  text-align: center;
+  color: #5c6474;
+  font-size: 0.8rem;
+}
+
+.homeCenter {
+  text-align: center;
+}
+
+.homeActions {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+
+.homeLink {
+  color: #ffb86c;
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(255, 184, 108, 0.4);
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.homeLink:hover {
+  color: #ffffff;
+  border-color: #ffb86c;
+}

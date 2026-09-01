@@ -1,0 +1,396 @@
+.pageWrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: #0b0b0e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #e8e6e3;
+  line-height: 1.6;
+}
+
+/* 磨砂玻璃卡片容器 */
+.aboutCard {
+  max-width: 1000px;
+  width: 100%;
+  background: rgba(20, 20, 26, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 2.5rem;
+  padding: 3rem 2.8rem;
+  box-shadow:
+    0 25px 50px -8px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
+}
+
+/* 版式 */
+.pageTitle {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #f6c27a 0%, #e8924e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.4rem;
+  display: inline-block;
+}
+
+.pageSub {
+  font-size: 1rem;
+  color: #8a8580;
+  margin-bottom: 2rem;
+  border-left: 3px solid #e8924e;
+  padding-left: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+.pageLead {
+  font-size: 1.05rem;
+  color: #cac6c0;
+  margin-bottom: 1.2rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.8rem 1.2rem;
+  border-radius: 1rem;
+  border-left: 2px solid rgba(232, 146, 78, 0.25);
+}
+
+.pageLink {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: #e8924e;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1.5px solid transparent;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.pageLink:hover {
+  color: #f6c27a;
+  border-bottom-color: #e8924e;
+}
+
+/* 返回首页链接（原内联 style="margin-top: 0"） */
+.pageLinkFlat {
+  composes: pageLink;
+  margin-top: 0;
+}
+
+/* 分割装饰 */
+.divider {
+  margin: 2.4rem 0 2rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(232, 146, 78, 0.2), rgba(232, 146, 78, 0.6), rgba(232, 146, 78, 0.2));
+}
+
+/* 信息网格 */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.8rem 2.5rem;
+  margin: 1.8rem 0 0.8rem;
+}
+
+.infoItem,
+.infoItemWide {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.9rem 1.4rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+}
+
+.infoItem:hover,
+.infoItemWide:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.infoItemWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8a8580;
+  margin-bottom: 0.2rem;
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ece9e4;
+  word-break: break-word;
+}
+
+.value a {
+  color: #e8924e;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+}
+
+.value a:hover {
+  color: #f6c27a;
+  border-bottom-color: #f6c27a;
+}
+
+/* 成员卡片 */
+.membersSection {
+  margin: 2.2rem 0 1.2rem;
+}
+
+.membersSection h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #b0aaa3;
+  letter-spacing: 0.3px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.membersSection h3 span {
+  font-weight: 300;
+  color: #6a6560;
+  font-size: 0.85rem;
+}
+
+.memberRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem 2rem;
+  background: rgba(255, 255, 255, 0.015);
+  padding: 1rem 1.2rem;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.memberChip {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+
+.memberChip img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 146, 78, 0.25);
+  background: #1e1e24;
+  object-fit: cover;
+}
+
+.memberName {
+  font-weight: 600;
+  color: #ece9e4;
+  font-size: 0.95rem;
+}
+
+.memberRole {
+  font-size: 0.75rem;
+  color: #8a8580;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.1rem 0.6rem;
+  border-radius: 20px;
+  margin-left: 0.2rem;
+}
+
+.memberBadge {
+  font-size: 0.7rem;
+  color: #b0aaa3;
+  background: rgba(232, 146, 78, 0.08);
+  padding: 0.1rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 146, 78, 0.1);
+}
+
+/* 点击后的交互状态（原 about.js：点击高亮 800ms + 保留圆角） */
+.memberChipTapped {
+  border-radius: 12px;
+}
+
+.memberChipActive {
+  outline: 2px solid rgba(232, 146, 78, 0.6);
+  border-radius: 12px;
+}
+
+/* 动态贡献者墙说明（原内联样式） */
+.contributorsNote {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: #7a7570;
+  padding-left: 0.2rem;
+}
+
+.contributorsLink {
+  color: #e8924e;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+}
+
+.contributorsLink:hover {
+  color: #f6c27a;
+  border-bottom-color: #f6c27a;
+}
+
+/* 技术栈标签 */
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.7rem;
+  margin: 1.4rem 0 0.2rem;
+}
+
+.techTag {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.25rem 1rem;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  color: #cac6c0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.15s;
+}
+
+.techTag:hover {
+  background: rgba(232, 146, 78, 0.08);
+  border-color: rgba(232, 146, 78, 0.2);
+  color: #f0d0b0;
+}
+
+/* 理念引用 */
+.quoteBlock {
+  margin: 2.2rem 0 1rem;
+  padding: 1.2rem 2rem;
+  border-radius: 1.6rem;
+  background: rgba(232, 146, 78, 0.04);
+  border: 1px solid rgba(232, 146, 78, 0.08);
+  text-align: center;
+}
+
+.quoteBlock p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #d6cfc6;
+  letter-spacing: 0.3px;
+}
+
+.attrib {
+  font-size: 0.85rem;
+  color: #7a7570;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+/* 联系与链接（原内联样式） */
+.contactRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem 1.5rem;
+  margin-top: 1.2rem;
+}
+
+.contactLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  color: #8a8580;
+}
+
+.contactLink {
+  color: #e8924e;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(232, 146, 78, 0.3);
+}
+
+.contactLink:hover {
+  color: #f6c27a;
+  border-bottom-color: #f6c27a;
+}
+
+/* 底部小字（原内联样式） */
+.pageMeta {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.75rem;
+  color: #5f5a55;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+}
+
+/* 小点缀：余烬微光 */
+.embersGlow {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #e8924e;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #e8924e66;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* 响应式 */
+@media (max-width: 700px) {
+  .aboutCard {
+    padding: 2rem 1.2rem;
+    border-radius: 1.8rem;
+  }
+
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .memberRow {
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .memberChip {
+    flex-wrap: wrap;
+  }
+
+  .quoteBlock p {
+    font-size: 1rem;
+  }
+
+  .pageLead {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.9rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .aboutCard {
+    padding: 1.5rem 0.9rem;
+  }
+
+  .pageTitle {
+    font-size: 1.6rem;
+  }
+
+  .memberChip img {
+    width: 32px;
+    height: 32px;
+  }
+}

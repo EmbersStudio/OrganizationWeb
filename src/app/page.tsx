@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 
-import HtmlPage from '@/components/html-page';
+import HomePage from '@/pages/home/HomePage';
 
 export const metadata: Metadata = {
   title: '首页',
-  description: 'EmbersStudio 首页，内容由 content/pages/home.html 提供',
+  description: 'EmbersStudio 首页，由 TSX 组件渲染',
 };
 
 /**
- * 首页：渲染 content/pages/home.html（含页面级 CSS/JS）。
+ * 首页：渲染 src/pages/home/HomePage（原 home.html 迁移）。
  */
 export default function Home() {
-  return <HtmlPage page="home" />;
+  return <HomePage />;
 }
