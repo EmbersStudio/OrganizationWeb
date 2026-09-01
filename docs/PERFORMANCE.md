@@ -18,22 +18,22 @@
 [Cloudflare Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/headers/) 生效：
 
 - `/_next/static/*` → `Cache-Control: public,max-age=31536000,immutable`（Next.js 产物文件名带内容哈希，可永久缓存，浏览器与 CDN 边缘都命中）；
-- `/scripts/*`、`/styles/*` → `Cache-Control: public,max-age=86400`（非哈希文件，更新后 URL 不变，使用 1 天短缓存）。
+- `/scripts/*`、`/styles/*` → `Cache-Control: public,max-age=86400`（非哈希文件，更新后 URL 不变，使用 1 天短缓存；迁移后仓库已无这两类静态资源，规则保留无副作用）。
 
-### 2. RUM 手动异步接入（可选）— `src/app/layout.tsx`
+### 2. RUM：由 Cloudflare 边缘自动注入（不手动干预）
 
-Cloudflare 的自动注入无法在仓库内修改，因此改为：
+按「纯 TypeScript 迁移」规范，仓库内不再手动插入任何 RUM 脚本（移除了此前基于
+`NEXT_PUBLIC_CF_BEACON_TOKEN` + `next/script` 的手动接入方案），
+Cloudflare Web Analytics 的 `beacon.min.js` + `/cdn-cgi/rum` 由边缘自动注入，
+仓库不做任何手动干预。
 
-1. 在 **Cloudflare Dashboard → Web Analytics** 关闭「自动注入」；
-2. 设置构建环境变量 `NEXT_PUBLIC_CF_BEACON_TOKEN`（见 `.env.example`）；
-3. 重新构建部署后，RUM 脚本通过 `next/script` 的 `afterInteractive`（async）加载，不再位于首屏关键链路。
-
-未设置该 Token 时不会加载任何 RUM 脚本（分析数据会缺失，直到手动接入）。
+若仍希望 RUM 异步化（避免位于首屏关键链路），请在 Cloudflare Dashboard →
+Web Analytics 中关闭「自动注入」并使用其提供的异步接入方式（不依赖本仓库代码）。
 
 ### 3. 无需改动的部分（已由 Next.js 16 自动完成）
 
 - **JS chunk 并行加载**：构建产物中所有 chunk 均为 `<script async>`，入口脚本与页面 CSS 已自动生成 `<link rel="preload">`；
-- **页面 CSS 提前下载**：页面级 CSS（`/styles/pages/*.css`）已由 Next.js 在 `<head>` 中输出 `preload`，浏览器会在解析 HTML 时尽早发起请求；
+- **页面 CSS 提前下载**：页面样式已收敛为 CSS Modules（随页面 chunk 打包），Next.js 自动在 `<head>` 中输出 `preload`，浏览器会在解析 HTML 时尽早发起请求；
 - **压缩**：Cloudflare 边缘默认对 text 类资源启用 Brotli/Gzip，无需仓库改动。
 
 ## 需要你在 Cloudflare Dashboard 完成的操作
@@ -66,4 +66,4 @@ curl -s https://embers-studio.crimsonseraph.top/ | grep -c 'beacon.min.js' || tr
 ## 可选后续（低优先级）
 
 - **103 Early Hints / HTTP/2**：如仍有首屏压力，可在 Cloudflare 开启 Early Hints（Dashboard → Speed → Optimization）并向关键资源发送 `Link` 头；本仓库暂无字体等资源，收益有限，建议先验证上述优化效果。
-- **关键 CSS 内联**：当前页面 CSS 体量很小（home.css 61 行），且已被 Next.js 自动 `preload`；若后续样式膨胀，再用 `critical`/`penthouse` 内联首屏样式。
+- **关键 CSS 内联**：当前页面 CSS 体量很小（HomePage/AboutPage 的 module.css），且已被 Next.js 自动 `preload`；若后续样式膨胀，再用 `critical`/`penthouse` 内联首屏样式。

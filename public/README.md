@@ -1,40 +1,27 @@
 # 静态资源目录说明（public）
 
-该目录下的文件会原样发布到站点根路径，例如：
+该目录下的文件会原样发布到站点根路径。例如：
 
-- `public/scripts/global.js` → `/scripts/global.js`
 - `public/images/logo.png` → `/images/logo.png`
-- `public/styles/pages/about.css` → `/styles/pages/about.css`
+- `public/_headers` → Cloudflare Workers Static Assets 响应头规则
+
+> 迁移说明：旧的手动脚本（`public/scripts/**`）与页面级 CSS（`public/styles/pages/**`）
+> 已随「纯 TypeScript + CSS Modules」改造移除。所有前端逻辑与样式均来自
+> `src/pages` / `src/components` / `src/hooks`（经 Next.js 打包），
+> 本目录仅保留真正需要原样发布的静态文件与边缘配置。
 
 ## 常用用途
 
-| 目录             | 用途                                                 |
-| ---------------- | ---------------------------------------------------- |
-| `scripts/`       | 公共前端 JS 脚本（全局加载）                         |
-| `scripts/pages/` | 页面级 JS（仅对应页面加载，见 `src/app/README.md`）  |
-| `styles/pages/`  | 页面级 CSS（仅对应页面加载，见 `src/app/README.md`） |
-| `images/`        | 图片资源                                             |
-| `fonts/`         | 字体文件                                             |
+| 文件/目录  | 用途                                                          |
+| ---------- | ------------------------------------------------------------- |
+| `images/`  | 图片资源（如 logo、favicon）                                  |
+| `fonts/`   | 字体文件                                                      |
+| `_headers` | Cloudflare Workers Static Assets 响应头规则（构建期自动生效） |
 
-## 如何添加全局脚本
+## 如何添加静态资源
 
-1. 在 `public/scripts/` 新建 `xxx.js`；
-2. 在 `src/app/layout.tsx` 中引入：
+1. 将文件放入 `public/` 下对应目录（`images/`、`fonts/` 等）；
+2. 在代码中以根路径引用：`/images/logo.png`。
 
-   ```tsx
-   import Script from 'next/script';
-   // ...
-   <Script src="/scripts/xxx.js" strategy="afterInteractive" />;
-   ```
-
-## 如何添加页面级 CSS / JS
-
-1. CSS 放到 `public/styles/pages/<page>.css`，JS 放到 `public/scripts/pages/<page>.js`；
-2. 在对应页面 HTML 顶部声明引用：
-
-   ```html
-   <link rel="stylesheet" href="/styles/pages/<page>.css" />
-   <script src="/scripts/pages/<page>.js"></script>
-   ```
-
-3. 这些标签由 `src/lib/html-loader.ts` 自动提取并仅在该页面挂载（详见 `src/app/README.md`）。
+> 组件内的图片、字体等资源如无特殊需要，也可直接放在 `src/pages/**` 同目录下
+> 由构建工具处理（自动哈希、缓存友好）。
