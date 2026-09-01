@@ -47,13 +47,19 @@ const TECH_TAGS = [
   'GitHub',
 ];
 
+/** AboutPage 组件参数 */
+interface AboutPageProps {
+  /** “返回首页”链接目标（由 src/router/routes.tsx 注册表提供，默认 /） */
+  backHref?: string;
+}
+
 /**
  * 关于页：余烬工作室介绍（原 about.html 迁移而来）。
  *
  * 客户端组件：成员卡片点击高亮交互由 React 事件系统实现
  * （原 public/scripts/pages/about.js 的行为）。
  */
-export default function AboutPage() {
+export default function AboutPage({ backHref = '/' }: AboutPageProps) {
   // 当前高亮（800ms 后自动清除）的成员卡片 ID
   const [activeChipId, setActiveChipId] = useState<string | null>(null);
   // 已被点击过的成员卡片 ID（保留圆角，保持与原 about.js 行为一致）
@@ -190,7 +196,7 @@ export default function AboutPage() {
                 </a>
               </span>
             </div>
-            <Link className={styles.pageLinkFlat} href="/">
+            <Link className={styles.pageLinkFlat} href={backHref}>
               ← 返回首页
             </Link>
           </div>
