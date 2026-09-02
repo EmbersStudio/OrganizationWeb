@@ -6,6 +6,12 @@
   gap: clamp(0.75rem, 2vw, 1.5rem);
   height: var(--site-nav-height, 4.5rem);
   padding: 0.6rem clamp(1rem, 3vw, 2rem);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(18, 18, 20, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   min-width: 0;
 }
 
@@ -70,6 +76,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.15rem;
+  margin: 0 1rem;
   padding: 0.2rem 0.2rem 0.3rem;
   max-width: 100%;
 }
