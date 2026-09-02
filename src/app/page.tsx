@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import HomePage from '@/views/home/HomePage';
+import { HomePage } from '@/views';
 import { getPagePath, requirePageRoute } from '@/router/routes';
 
 /** 首页路由注册项（来自 src/router/routes.tsx） */

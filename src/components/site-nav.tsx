@@ -7,28 +7,11 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dropdown, type DropdownMenuItem } from '@/components/ui/dropdown';
+import { NAV_ITEM_IDS, NAV_ITEMS, SITE_NAME } from '@/config/navigation';
 import { useOverflowDetection } from '@/hooks/use-overflow-detection';
 import { LOCALE_OPTIONS, useI18n } from '@/i18n';
-import { getPagePath } from '@/router/routes';
 import { usePerformanceMode } from '@/utils/device';
 import styles from './SiteNav.module.css';
-
-/** 导航链接（纯数据；展示文本通过 labelKey 走 i18n） */
-interface NavEntry {
-  id: string;
-  href: string;
-  labelKey: string;
-}
-
-const NAV_ENTRIES: readonly NavEntry[] = [
-  { id: 'home', href: getPagePath('home') ?? '/', labelKey: 'nav.home' },
-  { id: 'about', href: getPagePath('about') ?? '/about', labelKey: 'nav.about' },
-];
-
-const NAV_ITEM_IDS = NAV_ENTRIES.map((entry) => entry.id);
-
-/** 站点名称（可配置） */
-const SITE_NAME = 'EmbersStudio';
 
 /**
  * 顶部导航栏：基于 Card + Button + Dropdown 构建。
@@ -59,7 +42,7 @@ export default function SiteNav() {
   });
 
   const activeEntry =
-    NAV_ENTRIES.find((entry) => {
+    NAV_ITEMS.find((entry) => {
       if (entry.href === '/') {
         return pathname === '/';
       }
@@ -90,7 +73,7 @@ export default function SiteNav() {
   };
 
   const moreItems: readonly DropdownMenuItem[] = hiddenIds.map((id) => {
-    const entry = NAV_ENTRIES.find((item) => item.id === id);
+    const entry = NAV_ITEMS.find((item) => item.id === id);
     if (!entry) {
       return { id, label: id };
     }
@@ -128,7 +111,7 @@ export default function SiteNav() {
             <div ref={linkListRef} className={styles.linkList}>
               <span ref={indicatorRef} className={styles.indicator} aria-hidden="true" />
               {visibleIds.map((id) => {
-                const entry = NAV_ENTRIES.find((item) => item.id === id);
+                const entry = NAV_ITEMS.find((item) => item.id === id);
                 if (!entry) {
                   return null;
                 }

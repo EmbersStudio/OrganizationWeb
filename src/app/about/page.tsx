@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import AboutPage from '@/views/about/AboutPage';
+import { AboutPage } from '@/views';
 import { getPagePath, requirePageRoute } from '@/router/routes';
 
 /** 关于页路由注册项（来自 src/router/routes.tsx） */
