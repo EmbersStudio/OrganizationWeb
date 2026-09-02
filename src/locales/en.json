@@ -1,0 +1,59 @@
+{
+  "language": {
+    "label": "Language",
+    "switchAria": "Switch language",
+    "zh": "中文",
+    "en": "English"
+  },
+  "nav": {
+    "aria": "Primary navigation",
+    "brandAria": "{site} home",
+    "home": "Home",
+    "about": "About",
+    "more": "More"
+  },
+  "home": {
+    "brand": "EmbersStudio",
+    "slogan": "Creating Digital Wonders",
+    "learnMore": "Learn more →",
+    "footer": "© 2026 EmbersStudio · Powered by Next.js on Cloudflare"
+  },
+  "about": {
+    "title": "About · Embers Studio",
+    "subtitle": "⚙️ EmbersStudio — born from the embers, reborn anew",
+    "lead": " is a personal developer alliance founded by CrimsonSeraph, driven by technology. We believe excellent tools and works come from a passion for engineering and attention to detail. The team currently consists of three core members working across full-stack, game, desktop, and low-level development.",
+    "info": {
+      "fullstackLabel": "🌐 Full-Stack Development",
+      "fullstackValue": "Next.js · Node.js · TypeScript",
+      "gameLabel": "🎮 Game Development",
+      "gameValue": "Unreal Engine (C++) · Godot (GDScript)",
+      "desktopLabel": "🖥️ Desktop & Low-Level",
+      "desktopValue": "Qt (C++ / PyQt) · C++ · Python",
+      "frontendLabel": "🎨 Frontend & Interaction",
+      "frontendValue": "Vue 3 · CSS · JavaScript",
+      "projectLabel": "📦 Current Main Project",
+      "projectValueName": "OrganizationWeb",
+      "projectValueSuffix": " · Next.js + TypeScript organization site (in development)"
+    },
+    "membersHeading": "👥 Core Members",
+    "membersHeadingSub": "— contributors & maintainers",
+    "contributorsNote": "💡 See the live contributor wall at",
+    "contributorsLink": "GitHub Contributors",
+    "members": {
+      "crimsonseraphBadge": "🛠️ Founder",
+      "crimsonseraphRole": "Apps & Game Development",
+      "kinguangBadge": "💻 Core Developer",
+      "kinguangRole": "Next.js",
+      "angvannorBadge": "🎨 Frontend Developer",
+      "angvannorRole": "Vue 3 · CSS · JS"
+    },
+    "quote": "“From the Embers, we build.”",
+    "quoteAttrib": "— Every refactor is a rebirth; every line of code carries our pursuit of quality.",
+    "contactEmail": "📧 CrimsonSeraph.QwQ@gmail.com",
+    "contactX": "🐦 X / Twitter",
+    "contactSite": "🌐 embers-studio.crimsonseraph.top",
+    "backHome": "← Back to Home",
+    "metaCopyright": "© 2026 EmbersStudio · Embers Studio",
+    "metaLicense": "⚡ Open source · Projects use their own licenses; see the repo LICENSE for details"
+  }
+}

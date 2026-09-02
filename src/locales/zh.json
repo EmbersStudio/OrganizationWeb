@@ -1,0 +1,59 @@
+{
+  "language": {
+    "label": "语言",
+    "switchAria": "切换语言",
+    "zh": "中文",
+    "en": "English"
+  },
+  "nav": {
+    "aria": "主导航",
+    "brandAria": "{site} 首页",
+    "home": "首页",
+    "about": "关于",
+    "more": "更多"
+  },
+  "home": {
+    "brand": "EmbersStudio",
+    "slogan": "Creating Digital Wonders",
+    "learnMore": "了解更多 →",
+    "footer": "© 2026 EmbersStudio · Powered by Next.js on Cloudflare"
+  },
+  "about": {
+    "title": "关于 · 余烬工作室",
+    "subtitle": "⚙️ EmbersStudio — 始于余烬，重塑新生",
+    "lead": " 是由 CrimsonSeraph 发起的个人开发者联盟，以技术驱动为核心。我们相信优秀的工具和作品源于对技术的热爱与对细节的执着。目前团队由三位核心成员组成，致力于全栈、游戏、桌面及底层工具的开发。",
+    "info": {
+      "fullstackLabel": "🌐 全栈开发",
+      "fullstackValue": "Next.js · Node.js · TypeScript",
+      "gameLabel": "🎮 游戏开发",
+      "gameValue": "Unreal Engine (C++) · Godot (GDScript)",
+      "desktopLabel": "🖥️ 桌面 & 底层",
+      "desktopValue": "Qt (C++ / PyQt) · C++ · Python",
+      "frontendLabel": "🎨 前端交互",
+      "frontendValue": "Vue 3 · CSS · JavaScript",
+      "projectLabel": "📦 当前主项目",
+      "projectValueName": "OrganizationWeb",
+      "projectValueSuffix": " · Next.js + TypeScript 组织官网（开发中）"
+    },
+    "membersHeading": "👥 核心成员",
+    "membersHeadingSub": "— 贡献者 & 维护者",
+    "contributorsNote": "💡 动态贡献者墙请见",
+    "contributorsLink": "GitHub 贡献者",
+    "members": {
+      "crimsonseraphBadge": "🛠️ 创始人",
+      "crimsonseraphRole": "应用 & 游戏开发",
+      "kinguangBadge": "💻 核心开发",
+      "kinguangRole": "Next.js",
+      "angvannorBadge": "🎨 前端开发",
+      "angvannorRole": "Vue 3 · CSS · JS"
+    },
+    "quote": "“From the Embers, we build.”",
+    "quoteAttrib": "— 每一次重构都是新生，每一行代码都承载着对品质的追求。",
+    "contactEmail": "📧 CrimsonSeraph.QwQ@gmail.com",
+    "contactX": "🐦 X / Twitter",
+    "contactSite": "🌐 embers-studio.crimsonseraph.top",
+    "backHome": "← 返回首页",
+    "metaCopyright": "© 2026 EmbersStudio · 余烬工作室",
+    "metaLicense": "⚡ 开源 · 各项目采用不同许可证，详见仓库 LICENSE"
+  }
+}

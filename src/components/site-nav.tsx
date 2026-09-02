@@ -8,20 +8,21 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dropdown, type DropdownMenuItem } from '@/components/ui/dropdown';
 import { useOverflowDetection } from '@/hooks/use-overflow-detection';
+import { LOCALE_OPTIONS, useI18n } from '@/i18n';
 import { getPagePath } from '@/router/routes';
 import { usePerformanceMode } from '@/utils/device';
 import styles from './SiteNav.module.css';
 
-/** 导航链接（展示文本后续任务接入 i18n 后替换为翻译键） */
+/** 导航链接（纯数据；展示文本通过 labelKey 走 i18n） */
 interface NavEntry {
   id: string;
   href: string;
-  label: string;
+  labelKey: string;
 }
 
 const NAV_ENTRIES: readonly NavEntry[] = [
-  { id: 'home', href: getPagePath('home') ?? '/', label: '首页' },
-  { id: 'about', href: getPagePath('about') ?? '/about', label: '关于' },
+  { id: 'home', href: getPagePath('home') ?? '/', labelKey: 'nav.home' },
+  { id: 'about', href: getPagePath('about') ?? '/about', labelKey: 'nav.about' },
 ];
 
 const NAV_ITEM_IDS = NAV_ENTRIES.map((entry) => entry.id);
@@ -32,14 +33,16 @@ const SITE_NAME = 'EmbersStudio';
 /**
  * 顶部导航栏：基于 Card + Button + Dropdown 构建。
  *
- * - 左侧品牌、中间导航链接、右侧操作区（更多/语言切换等）；
+ * - 左侧品牌、中间导航链接、右侧操作区（更多 / 语言切换）；
  * - 当前激活页面下方显示平滑滑动下划线；
- * - 链接过多时自动折叠进“更多”展开栏（useOverflowDetection 动态测量）。
+ * - 链接过多时自动折叠进“更多”展开栏（useOverflowDetection 动态测量）；
+ * - 语言切换经 I18nProvider 即时生效并持久化到 localStorage。
  */
 export default function SiteNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { animationsEnabled } = usePerformanceMode();
+  const { t, locale, setLocale } = useI18n();
 
   const navTrackRef = useRef<HTMLElement | null>(null);
   const linkListRef = useRef<HTMLDivElement | null>(null);
@@ -51,6 +54,8 @@ export default function SiteNav() {
     containerRef: navTrackRef,
     itemRefs: itemRefsRef,
     itemIds,
+    // 语言切换后文案宽度可能变化，需要重新测量折叠
+    remeasureKey: locale,
   });
 
   const activeEntry =
@@ -91,7 +96,7 @@ export default function SiteNav() {
     }
     return {
       id: entry.id,
-      label: entry.label,
+      label: t(entry.labelKey),
       selected: entry.id === activeId,
       onClick: () => {
         router.push(entry.href);
@@ -99,16 +104,27 @@ export default function SiteNav() {
     };
   });
 
+  const languageItems: readonly DropdownMenuItem[] = LOCALE_OPTIONS.map((option) => ({
+    id: option.code,
+    label: t(option.labelKey),
+    selected: option.code === locale,
+    onClick: () => {
+      setLocale(option.code);
+    },
+  }));
+
+  const currentLocale = LOCALE_OPTIONS.find((option) => option.code === locale) ?? LOCALE_OPTIONS[0];
+
   return (
     <header className={[styles.header, animationsEnabled ? '' : styles.lowMotion].filter(Boolean).join(' ')}>
       <Card variant="elevated" radius="xl" padding="none" shadow="md" className={styles.bar}>
         <div className={styles.inner}>
-          <Link className={styles.brand} href="/" aria-label={SITE_NAME + ' 首页'}>
+          <Link className={styles.brand} href="/" aria-label={t('nav.brandAria', { site: SITE_NAME })}>
             <span className={styles.brandMark} aria-hidden="true" />
             <span className={styles.brandName}>{SITE_NAME}</span>
           </Link>
 
-          <nav ref={navTrackRef} className={styles.navTrack} aria-label="主导航">
+          <nav ref={navTrackRef} className={styles.navTrack} aria-label={t('nav.aria')}>
             <div ref={linkListRef} className={styles.linkList}>
               <span ref={indicatorRef} className={styles.indicator} aria-hidden="true" />
               {visibleIds.map((id) => {
@@ -125,7 +141,7 @@ export default function SiteNav() {
                     aria-current={active ? 'page' : undefined}
                     className={[styles.navLink, active ? styles.navLinkActive : null].filter(Boolean).join(' ')}
                   >
-                    {entry.label}
+                    {t(entry.labelKey)}
                   </Link>
                 );
               })}
@@ -133,11 +149,20 @@ export default function SiteNav() {
           </nav>
 
           <div className={styles.actions}>
+            <Dropdown
+              trigger={
+                <Button variant="ghost" size="sm" shape="square" aria-label={t('language.switchAria')}>
+                  {currentLocale.shortLabel}
+                </Button>
+              }
+              items={languageItems}
+              align="end"
+            />
             {needsMore && (
               <Dropdown
                 trigger={
                   <Button variant="ghost" size="sm" shape="square">
-                    更多
+                    {t('nav.more')}
                   </Button>
                 }
                 items={moreItems}
