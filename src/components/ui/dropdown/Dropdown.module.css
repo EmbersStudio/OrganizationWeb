@@ -1,0 +1,124 @@
+/* Dropdown 默认样式（CSS Modules，类名 camelCase） */
+
+.anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+/* 触发器不是 React 元素（如纯文本）时的兜底按钮 */
+.fallbackTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+}
+
+.fallbackTrigger:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 弹出面板：基于 Card，覆盖成绝对定位 */
+.panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  z-index: 90;
+  min-width: max-content;
+  padding: 0.45rem;
+  animation: dropdown-in 0.14s ease-out;
+}
+
+.alignStart {
+  left: 0;
+}
+
+.alignEnd {
+  right: 0;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- 菜单列表 ---- */
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 10.5rem;
+  padding: 0.55rem 0.8rem;
+  border: 0;
+  border-radius: 0.55rem;
+  background: transparent;
+  color: #d7d4cd;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.itemSelected {
+  color: #ffb86c;
+}
+
+.itemSelected:hover:not(:disabled) {
+  color: #ffd2a1;
+}
+
+.itemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  flex: 0 0 auto;
+}
+
+.itemLabel {
+  flex: 1 1 auto;
+}
+
+.itemCheck {
+  color: #ffb86c;
+  font-size: 0.8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+}
