@@ -12,4 +12,5 @@
 
 - `use-key-navigation.ts` —— 全局键盘快捷键跳页；
 - `use-overflow-detection.ts` —— 测量容器/子项宽度，返回应折叠进“更多”的项；
-- `use-performance-mode.ts` —— 设备/系统动效偏好，返回是否启用完整动效。
+- `use-performance-mode.ts` —— 设备/系统动效偏好，返回是否启用完整动效；
+- `use-page-meta.ts` —— 根据当前语言从路由注册表中获取页面标题和描述，用于 `next/head` 动态更新。

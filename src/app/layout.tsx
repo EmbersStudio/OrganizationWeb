@@ -10,10 +10,7 @@ import '@/styles/globals.css';
 import '@/styles/custom/theme.css';
 
 export const metadata: Metadata = {
-  title: {
-    default: 'EmbersStudio',
-    template: '%s | EmbersStudio',
-  },
+  title: 'EmbersStudio',
   description: 'From the Embers, we build.',
 };
 

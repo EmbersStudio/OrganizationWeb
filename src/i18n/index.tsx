@@ -133,6 +133,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const setLocale = useCallback((next: Locale) => {
     try {
       window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
+      // 写入 Cookie，有效期 365 天，路径为根
+      document.cookie = `embersstudio.locale=${next}; path=/; max-age=${60 * 60 * 24 * 365}`;
     } catch {
       // 忽略持久化失败：当前会话内仍即时生效
     }

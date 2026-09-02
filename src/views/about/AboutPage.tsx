@@ -1,9 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import Head from 'next/head';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { useI18n } from '@/i18n';
+import { usePageMeta } from '@/hooks/use-page-meta';
 import { usePerformanceMode } from '@/utils/device';
 import { MEMBERS, type Member } from './members';
 import styles from './AboutPage.module.css';
@@ -55,6 +56,7 @@ interface AboutPageProps {
 export default function AboutPage({ }: AboutPageProps) {
   const { animationsEnabled } = usePerformanceMode();
   const { t } = useI18n();
+  const { title, description } = usePageMeta('about');
 
   // 信息网格（语言变化时重建，文案来自翻译）
   const infoItems = useMemo<readonly InfoItem[]>(
@@ -107,112 +109,123 @@ export default function AboutPage({ }: AboutPageProps) {
     };
   }, []);
 
+  // 语言变化时更新标题
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
   return (
-    <main>
-      <div className={[styles.pageWrap, animationsEnabled ? '' : styles.reducedMotion].filter(Boolean).join(' ')}>
-        <div className={styles.aboutCard}>
-          {/* 页头 */}
-          <h1 className={styles.pageTitle}>
-            <span className={styles.embersGlow} />
-            {t('about.title')}
-          </h1>
-          <div className={styles.pageSub}>{t('about.subtitle')}</div>
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Head>
+      <main>
+        <div className={[styles.pageWrap, animationsEnabled ? '' : styles.reducedMotion].filter(Boolean).join(' ')}>
+          <div className={styles.aboutCard}>
+            {/* 页头 */}
+            <h1 className={styles.pageTitle}>
+              <span className={styles.embersGlow} />
+              {t('about.title')}
+            </h1>
+            <div className={styles.pageSub}>{t('about.subtitle')}</div>
 
-          {/* 描述 */}
-          <p className={styles.pageLead}>
-            <strong>{t('home.brand')}</strong>
-            {t('about.lead')}
-          </p>
+            {/* 描述 */}
+            <p className={styles.pageLead}>
+              <strong>{t('home.brand')}</strong>
+              {t('about.lead')}
+            </p>
 
-          {/* 信息网格 */}
-          <div className={styles.infoGrid}>
-            {infoItems.map((item) => (
-              <div key={item.labelKey} className={item.wide ? styles.infoItemWide : styles.infoItem}>
-                <span className={styles.label}>{t(item.labelKey)}</span>
-                <span className={styles.value}>{item.value}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* 成员 */}
-          <div className={styles.membersSection}>
-            <h3>
-              {t('about.membersHeading')}
-              <span>{t('about.membersHeadingSub')}</span>
-            </h3>
-            <div className={styles.memberRow}>
-              {MEMBERS.map((member) => (
-                <div
-                  key={member.id}
-                  className={[
-                    styles.memberChip,
-                    tappedChipIds.has(member.id) ? styles.memberChipTapped : '',
-                    activeChipId === member.id ? styles.memberChipActive : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                  onClick={() => handleChipClick(member)}
-                >
-                  {/* 保持原 about.html 的普通 img + lazy 加载，避免引入 next/image 优化行为变化 */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={'https://github.com/' + member.github + '.png'} alt={member.name} loading="lazy" />
-                  <span className={styles.memberName}>{member.name}</span>
-                  <span className={styles.memberBadge}>{t(member.badgeKey)}</span>
-                  <span className={styles.memberRole}>{t(member.roleKey)}</span>
+            {/* 信息网格 */}
+            <div className={styles.infoGrid}>
+              {infoItems.map((item) => (
+                <div key={item.labelKey} className={item.wide ? styles.infoItemWide : styles.infoItem}>
+                  <span className={styles.label}>{t(item.labelKey)}</span>
+                  <span className={styles.value}>{item.value}</span>
                 </div>
               ))}
             </div>
-            <p className={styles.contributorsNote}>
-              {t('about.contributorsNote')}{' '}
-              <a className={styles.contributorsLink} href={CONTRIBUTORS_URL} target="_blank" rel="noopener">
-                {t('about.contributorsLink')}
-              </a>
-            </p>
-          </div>
 
-          {/* 技术栈标签 */}
-          <div className={styles.techTags}>
-            {TECH_TAGS.map((tag) => (
-              <span key={tag} className={styles.techTag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* 分隔 */}
-          <div className={styles.divider} />
-
-          {/* 理念引用 */}
-          <div className={styles.quoteBlock}>
-            <p>{t('about.quote')}</p>
-            <div className={styles.attrib}>{t('about.quoteAttrib')}</div>
-          </div>
-
-          {/* 联系与链接 */}
-          <div className={styles.contactRow}>
-            <div className={styles.contactLinks}>
-              {CONTACT_LINKS.map((item) => (
-                <span key={item.key}>
-                  <a
-                    className={styles.contactLink}
-                    href={item.href}
-                    target={item.external ? '_blank' : undefined}
-                    rel={item.external ? 'noopener noreferrer' : undefined}
+            {/* 成员 */}
+            <div className={styles.membersSection}>
+              <h3>
+                {t('about.membersHeading')}
+                <span>{t('about.membersHeadingSub')}</span>
+              </h3>
+              <div className={styles.memberRow}>
+                {MEMBERS.map((member) => (
+                  <div
+                    key={member.id}
+                    className={[
+                      styles.memberChip,
+                      tappedChipIds.has(member.id) ? styles.memberChipTapped : '',
+                      activeChipId === member.id ? styles.memberChipActive : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    onClick={() => handleChipClick(member)}
                   >
-                    {t(item.key)}
-                  </a>
+                    {/* 保持原 about.html 的普通 img + lazy 加载，避免引入 next/image 优化行为变化 */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={'https://github.com/' + member.github + '.png'} alt={member.name} loading="lazy" />
+                    <span className={styles.memberName}>{member.name}</span>
+                    <span className={styles.memberBadge}>{t(member.badgeKey)}</span>
+                    <span className={styles.memberRole}>{t(member.roleKey)}</span>
+                  </div>
+                ))}
+              </div>
+              <p className={styles.contributorsNote}>
+                {t('about.contributorsNote')}{' '}
+                <a className={styles.contributorsLink} href={CONTRIBUTORS_URL} target="_blank" rel="noopener">
+                  {t('about.contributorsLink')}
+                </a>
+              </p>
+            </div>
+
+            {/* 技术栈标签 */}
+            <div className={styles.techTags}>
+              {TECH_TAGS.map((tag) => (
+                <span key={tag} className={styles.techTag}>
+                  {tag}
                 </span>
               ))}
             </div>
-          </div>
 
-          {/* 底部小字 */}
-          <div className={styles.pageMeta}>
-            <span>{t('about.metaCopyright')}</span>
-            <span>{t('about.metaLicense')}</span>
+            {/* 分隔 */}
+            <div className={styles.divider} />
+
+            {/* 理念引用 */}
+            <div className={styles.quoteBlock}>
+              <p>{t('about.quote')}</p>
+              <div className={styles.attrib}>{t('about.quoteAttrib')}</div>
+            </div>
+
+            {/* 联系与链接 */}
+            <div className={styles.contactRow}>
+              <div className={styles.contactLinks}>
+                {CONTACT_LINKS.map((item) => (
+                  <span key={item.key}>
+                    <a
+                      className={styles.contactLink}
+                      href={item.href}
+                      target={item.external ? '_blank' : undefined}
+                      rel={item.external ? 'noopener noreferrer' : undefined}
+                    >
+                      {t(item.key)}
+                    </a>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 底部小字 */}
+            <div className={styles.pageMeta}>
+              <span>{t('about.metaCopyright')}</span>
+              <span>{t('about.metaLicense')}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

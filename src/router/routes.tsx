@@ -1,13 +1,15 @@
+import type { Locale } from '@/i18n';
+
 /** 页面路由注册项（导航/元信息/快捷键的公共数据源） */
 export interface PageRouteInfo {
   /** 页面唯一标识（导航、快捷键、文档中使用） */
   id: string;
   /** 路由路径（Next.js App Router 路径） */
   path: string;
-  /** 页面标题 */
-  title: string;
-  /** 页面描述（可选） */
-  description?: string;
+  /** 多语言标题 */
+  title: Record<Locale, string>;
+  /** 多语言描述（可选） */
+  description?: Record<Locale, string>;
 }
 
 /**
@@ -25,14 +27,26 @@ export const PAGE_REGISTRY: readonly PageRouteInfo[] = [
   {
     id: 'home',
     path: '/',
-    title: '首页',
-    description: 'EmbersStudio 首页，由 TSX 组件渲染',
+    title: {
+      zh: '首页 · 余烬工作室',
+      en: 'Home · EmbersStudio',
+    },
+    description: {
+      zh: '我们拥抱开源，乐于分享，并期待与志同道合的开发者共同成长。',
+      en: 'We embrace open source, enjoy sharing, and look forward to growing together with like-minded developers.',
+    },
   },
   {
     id: 'about',
     path: '/about',
-    title: '关于 · 余烬工作室',
-    description: 'EmbersStudio 关于页，由 TSX 组件渲染',
+    title: {
+      zh: '关于 · 余烬工作室',
+      en: 'About · EmbersStudio',
+    },
+    description: {
+      zh: '了解余烬工作室的成员、技术栈和理念。',
+      en: 'Learn about EmbersStudio\'s members, tech stack, and philosophy.',
+    },
   },
 ];
 

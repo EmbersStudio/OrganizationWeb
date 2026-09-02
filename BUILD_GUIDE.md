@@ -329,6 +329,31 @@ export function Demo() {
 3. 在语言文件里添加语言显示名键（如 `language.fr`）；
 4. 组件文本全部通过 `t()` 读取，页面无需改文案。
 
+### 页面元数据多语言（标题 / 描述）
+
+页面标题与描述也支持多语言，并与组件内文案共用同一套语言偏好。
+
+- **数据源**：所有页面的标题/描述存储在 `src/router/routes.tsx` 的 `PAGE_REGISTRY` 中，每个路由定义 `title: Record<Locale, string>` 和 `description?: Record<Locale, string>`。
+- **客户端动态更新**：页面组件（客户端）通过 `usePageMeta` Hook 获取当前语言对应的元数据，并使用 `next/head` 的 `<Head>` 组件注入，语言切换时标题立即刷新。
+- **服务端渲染（SEO）**：每个路由的 `src/app/<route>/page.tsx` 中导出 `generateMetadata` 异步函数，从 Cookie 中读取当前语言，返回对应语言的标题/描述，确保搜索引擎抓取和首屏加载正确。
+
+**新增语言时**，除了在 `i18n` 中注册新语言，还需在 `routes.tsx` 中为每个页面的 `title` 和 `description` 添加对应语言的字符串，否则回退为原键名或空值。
+
+示例：在 `routes.tsx` 中为 `home` 添加日语标题：
+
+```ts
+{
+  id: 'home',
+  path: '/',
+  title: {
+    zh: '首页 · 余烬工作室',
+    en: 'Home · EmbersStudio',
+    ja: 'ホーム · EmbersStudio',   // 新增
+  },
+  // description 同理
+}
+提示：客户端和服务端的元数据均使用同一份 routes.tsx 数据，保持单一真实来源，避免不一致。
+
 ---
 
 ## 八、设备检测与性能模式

@@ -1,8 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import Head from 'next/head';
+import { useEffect } from 'react';
 
 import { useI18n } from '@/i18n';
+import { usePageMeta } from '@/hooks/use-page-meta';
 import styles from './HomePage.module.css';
 
 /** HomePage 组件参数 */
@@ -14,18 +16,30 @@ interface HomePageProps {
  */
 export default function HomePage({ }: HomePageProps) {
   const { t } = useI18n();
+  const { title, description } = usePageMeta('home');
+
+  // 语言变化时更新标题
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return (
-    <main>
-      <div className={styles.bodyWrapper}>
-        <div className={styles.homeCenter}>
-          <h1 className={styles.brand}>{t('home.brand')}</h1>
-          <p className={styles.slogan}>{t('home.slogan')}</p>
-          <p className={styles.homeActions}>
-          </p>
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Head>
+      <main>
+        <div className={styles.bodyWrapper}>
+          <div className={styles.homeCenter}>
+            <h1 className={styles.brand}>{t('home.brand')}</h1>
+            <p className={styles.slogan}>{t('home.slogan')}</p>
+            <p className={styles.homeActions}>
+            </p>
+          </div>
         </div>
-      </div>
-      <footer className={styles.footer}>{t('home.footer')}</footer>
-    </main>
+        <footer className={styles.footer}>{t('home.footer')}</footer>
+      </main>
+    </>
   );
 }
