@@ -391,3 +391,17 @@
     height: 32px;
   }
 }
+
+/* 低功耗模式：移动端/系统减少动态效果时关闭复杂视觉效果 */
+.reducedMotion .aboutCard {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: none;
+}
+
+.reducedMotion .techTag,
+.reducedMotion .memberChip,
+.reducedMotion .memberChipTapped,
+.reducedMotion .memberChipActive {
+  transition: none;
+}

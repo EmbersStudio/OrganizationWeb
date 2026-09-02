@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Dropdown, type DropdownMenuItem } from '@/components/ui/dropdown';
 import { useOverflowDetection } from '@/hooks/use-overflow-detection';
 import { getPagePath } from '@/router/routes';
+import { usePerformanceMode } from '@/utils/device';
 import styles from './SiteNav.module.css';
 
 /** 导航链接（展示文本后续任务接入 i18n 后替换为翻译键） */
@@ -38,6 +39,7 @@ const SITE_NAME = 'EmbersStudio';
 export default function SiteNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const { animationsEnabled } = usePerformanceMode();
 
   const navTrackRef = useRef<HTMLElement | null>(null);
   const linkListRef = useRef<HTMLDivElement | null>(null);
@@ -98,7 +100,7 @@ export default function SiteNav() {
   });
 
   return (
-    <header className={styles.header}>
+    <header className={[styles.header, animationsEnabled ? '' : styles.lowMotion].filter(Boolean).join(' ')}>
       <Card variant="elevated" radius="xl" padding="none" shadow="md" className={styles.bar}>
         <div className={styles.inner}>
           <Link className={styles.brand} href="/" aria-label={SITE_NAME + ' 首页'}>

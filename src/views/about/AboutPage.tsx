@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { MEMBERS, type Member } from './members';
+import { usePerformanceMode } from '@/utils/device';
 import styles from './AboutPage.module.css';
 
 /** 组织仓库地址 */
@@ -60,6 +61,8 @@ interface AboutPageProps {
  * （原 public/scripts/pages/about.js 的行为）。
  */
 export default function AboutPage({ backHref = '/' }: AboutPageProps) {
+  const { animationsEnabled } = usePerformanceMode();
+
   // 当前高亮（800ms 后自动清除）的成员卡片 ID
   const [activeChipId, setActiveChipId] = useState<string | null>(null);
   // 已被点击过的成员卡片 ID（保留圆角，保持与原 about.js 行为一致）
@@ -90,7 +93,7 @@ export default function AboutPage({ backHref = '/' }: AboutPageProps) {
 
   return (
     <main>
-      <div className={styles.pageWrap}>
+      <div className={[styles.pageWrap, animationsEnabled ? '' : styles.reducedMotion].filter(Boolean).join(' ')}>
         <div className={styles.aboutCard}>
           {/* 页头 */}
           <h1 className={styles.pageTitle}>
