@@ -19,6 +19,7 @@
 ├── src/
 │   ├── app/                   # Next.js App Router 路由层（page.tsx / layout.tsx / api/）
 │   ├── views/                 # ★ 页面组件：每个页面一个文件夹
+│   │   ├── index.ts           # 页面组件统一导出（PAGES 映射，等价页面注册表）
 │   │   ├── home/
 │   │   │   ├── HomePage.tsx          # 页面组件
 │   │   │   └── HomePage.module.css   # 页面专属样式（CSS Modules）
@@ -26,9 +27,15 @@
 │   │       ├── AboutPage.tsx
 │   │       ├── AboutPage.module.css
 │   │       └── members.ts            # 页面私有数据/类型
-│   ├── components/            # 公共组件（跨页面复用），如 keyboard-navigator.tsx
-│   ├── hooks/                 # 自定义 Hooks，如 use-key-navigation.ts
-│   ├── utils/                 # 纯函数工具（不含 React 依赖）
+│   ├── components/            # 公共组件（跨页面复用）
+│   │   ├── site-nav.tsx              # 顶部导航栏（Card/Button/Dropdown）
+│   │   ├── keyboard-navigator.tsx    # 全局快捷键监听
+│   │   └── ui/                       # ★ 基础元件库（button/card/dropdown）
+│   ├── config/                # 前端配置（navigation.ts：站点名/导航顺序/文案键）
+│   ├── i18n/                  # 轻量 i18n（I18nProvider / useI18n）
+│   ├── locales/               # 翻译文件（zh.json / en.json）
+│   ├── hooks/                 # 自定义 Hooks（use-key-navigation / use-overflow-detection 等）
+│   ├── utils/                 # 纯函数工具（device.ts 设备检测）
 │   ├── router/                # 路由注册表 routes.tsx + 快捷键映射 keymap.ts
 │   ├── styles/                # 全局样式（globals.css 基础样式、custom/theme.css 设计变量）
 │   ├── types/                 # 跨模块共享类型定义
@@ -148,23 +155,27 @@ export default function Projects() {
 
 ---
 
-## 三、如何在导航中注册页面
+## 三、页面与导航注册
 
-本项目为 MPA 风格的页面互链（首页 ↔ 关于页），导航链接统一从注册表取路径：
+页面与导航采用“注册表 + 配置”双层结构：
 
-```ts
-import { getPagePath } from '@/router/routes';
+- **路由注册表** `src/router/routes.tsx`：页面 id / 路径 / 元信息（metadata 数据源）；
+- **页面组件导出** `src/views/index.ts`：统一导出各页面组件（并含 `PAGES` id→组件映射）；
+- **导航配置** `src/config/navigation.ts`：站点名、导航顺序与文案翻译键（纯数据）。
 
-const aboutPath = getPagePath('about'); // → '/about'
-```
+新增页面的标准流程：
 
-- **服务端组件**（如 `HomePage`）通过 props 接收注册表路径：`<HomePage nextHref={getPagePath('about')} />`；
-- **客户端组件**同理，由服务端路由页传入路径 prop；
-- 若未来需要全局导航栏：在 `src/components/` 新建 `SiteNav.tsx`，遍历 `PAGE_REGISTRY`
-  生成菜单（`<Link href={route.path}>{route.title}</Link>`），并挂载到 `src/app/layout.tsx`。
+1. 在 `src/views/<name>/` 创建页面组件与 CSS Module；
+2. 在 `src/views/index.ts` 导出组件（可加入 `PAGES`）；
+3. 在 `src/router/routes.tsx` 的 `PAGE_REGISTRY` 注册路由元信息；
+4. 在 `src/config/navigation.ts` 的 `NAV_ORDER` 追加 `{ id, labelKey }`（决定导航顺序）；
+5. 在 `src/locales/zh.json`、`en.json` 添加 `nav.<id>` 文案；
+6. 创建 `src/app/<route>/page.tsx` 渲染组件（见第二章示例，页面从 `@/views` 引入）。
 
-> 原则：页面路径只在 `routes.tsx` 写一次，其他位置一律通过 `getPagePath` 获取，
-> 避免硬编码路径导致导航失同步。
+> 原则：页面路径只在 `routes.tsx` 写一次；导航栏组件（`SiteNav`）读取
+> `NAV_ITEMS`（路径由配置从注册表解析），文案统一走 i18n，不硬编码。
+>
+> ⚠️ 页面组件统一放 `src/views`，不要放 `src/pages`（Pages Router 保留目录）。
 
 ---
 
@@ -191,7 +202,180 @@ export const KEY_NAV_MAP: Readonly<Record<string, string>> = {
 
 ---
 
-## 五、构建与开发命令
+## 五、基础元件（Button / Card / Dropdown）
+
+基础元件统一位于 `src/components/ui/<name>/`，目录内为 `index.tsx` + `*.module.css`。
+每个元件带默认 CSS Module 样式与完整 TypeScript props，并支持外部 `className` / `style` 覆盖。
+
+### Button
+
+| Prop           | 说明                                                       |
+| -------------- | ---------------------------------------------------------- |
+| `variant`      | `primary` / `outline` / `ghost` / `danger`，默认 `primary` |
+| `size`         | `sm` / `md` / `lg`，默认 `md`                              |
+| `shape`        | `rounded` / `square`，默认 `rounded`                       |
+| `icon`         | 字体图标 / SVG / 任意 ReactNode                            |
+| `iconPosition` | `start` / `end`，默认 `start`                              |
+| `children`     | 可选；不传 children/icon 时按钮可为空（占位或装饰）        |
+| `href`         | 传入后渲染为 `<a>`                                         |
+
+```tsx
+<Button size="sm">保存</Button>
+<Button variant="outline" icon={<StarIcon />}>收藏</Button>
+<Button shape="square">更多</Button>
+<Button aria-hidden="true" />
+```
+
+### Card
+
+| Prop       | 说明                                        |
+| ---------- | ------------------------------------------- |
+| `variant`  | `elevated` / `outlined` / `flat` / `tinted` |
+| `radius`   | `none` / `sm` / `md` / `lg` / `xl` / `full` |
+| `padding`  | `none` / `sm` / `md` / `lg`                 |
+| `shadow`   | `none` / `sm` / `md` / `lg`                 |
+| `children` | 任意子元素                                  |
+
+```tsx
+<Card variant="elevated" radius="lg" padding="md" shadow="md">
+  <p>卡片内容</p>
+</Card>
+```
+
+### Dropdown
+
+由触发器（通常为 Button）与弹出面板（基于 Card）组成。支持两种内容方式：
+
+- `items`：传入 `DropdownMenuItem[]`（label/icon/href/onClick/disabled/selected）；
+- `children`：在面板中放任意自定义内容。
+
+点击触发器自动展开/收起；点击外部或按 Escape 自动关闭；菜单项点击后默认收起
+（`closeOnSelect={false}` 可关闭该行为）。
+
+```tsx
+<Dropdown
+  trigger={
+    <Button variant="ghost" size="sm">
+      更多
+    </Button>
+  }
+  items={[
+    { id: 'a', label: '选项 A', onClick: () => doA() },
+    { id: 'b', label: '选项 B', disabled: true },
+  ]}
+  align="end"
+/>
+```
+
+---
+
+## 六、导航栏配置
+
+顶部导航栏组件为 `src/components/site-nav.tsx`（已挂载在 `src/app/layout.tsx`）：
+
+- 左侧站点名（`SITE_NAME`）、中间导航链接、右侧语言切换与“更多”菜单；
+- 当前页面激活时，链接下方显示平滑滑动下划线；
+- 链接过多超出容器时，自动把放不下的链接折叠进“更多”展开栏（`useOverflowDetection` 测量）。
+
+### 添加 / 删除 / 调整顺序
+
+编辑 `src/config/navigation.ts` 中文件头部的 `NAV_ORDER`：
+
+```ts
+// 只改这里：顺序即显示顺序
+const NAV_ORDER: readonly { id: string; labelKey: string }[] = [
+  { id: 'home', labelKey: 'nav.home' },
+  { id: 'about', labelKey: 'nav.about' },
+  // { id: 'projects', labelKey: 'nav.projects' }, // 新增导航项
+];
+```
+
+删除一行即从导航移除；调整行序即调整显示顺序。路径与文案分别由路由注册表与 i18n 提供，
+组件内无需改动。
+
+> 新增页面时别忘了在 `src/locales/*.json` 补充 `nav.*` 键，详见下一节。
+
+---
+
+## 七、国际化（i18n）与语言切换
+
+项目使用自建的轻量 i18n（无第三方依赖）：
+
+- 语言文件：`src/locales/zh.json`、`src/locales/en.json`（JSON 嵌套结构）；
+- Provider/Hook：`src/i18n/index.tsx` 导出 `I18nProvider` 与 `useI18n()`；
+- 语言偏好存入 localStorage（key：`embersstudio.locale`），刷新后保持；
+- 语言切换下拉菜单位于导航栏右侧（显示“中”/“En”），切换即时生效。
+
+### 组件中使用翻译
+
+```tsx
+'use client';
+
+import { useI18n } from '@/i18n';
+
+export function Demo() {
+  const { t, locale, setLocale } = useI18n();
+  return (
+    <p>
+      {t('nav.home')} · 当前语言：{locale}
+      <button onClick={() => setLocale('en')}>English</button>
+    </p>
+  );
+}
+```
+
+支持 `{var}` 插值：`t('nav.brandAria', { site: 'EmbersStudio' })`。
+
+### 新增语言
+
+1. 复制 `src/locales/zh.json` 为 `src/locales/<code>.json` 并翻译；
+2. 在 `src/i18n/index.tsx` 头部配置中：
+   - `type Locale` 增加语言代码；
+   - `dictionaries` 注册新 JSON；
+   - `LOCALE_OPTIONS` 增加 `{ code, labelKey, shortLabel }`；
+3. 在语言文件里添加语言显示名键（如 `language.fr`）；
+4. 组件文本全部通过 `t()` 读取，页面无需改文案。
+
+---
+
+## 八、设备检测与性能模式
+
+工具位置：
+
+- `src/utils/device.ts`：`getDeviceType()`（优先视口宽度，UA 兜底）；
+- `src/hooks/use-performance-mode.ts`：`usePerformanceMode()` Hook
+  （从 `@/utils/device` 亦可导入）。
+
+### getDeviceType
+
+```ts
+import { getDeviceType } from '@/utils/device';
+
+getDeviceType(); // 基于当前窗口宽度
+getDeviceType(390); // 'mobile'（< 768）
+getDeviceType(1024); // 'tablet'（< 1200）
+getDeviceType(1440); // 'desktop'
+```
+
+### usePerformanceMode
+
+返回 `{ deviceType, prefersReducedMotion, lowPower, animationsEnabled }`。
+移动端或系统开启“减少动态效果”时 `animationsEnabled === false`，应关闭复杂
+过渡 / 粒子 / 毛玻璃等耗电动效，保留 hover 变色等基础反馈。
+
+```tsx
+const { animationsEnabled } = usePerformanceMode();
+
+<div className={animationsEnabled ? styles.fancy : styles.simple}>…</div>;
+```
+
+- 导航栏已在低功耗模式自动禁用下划线滑动过渡（保留变色反馈）；
+- 关于页在低功耗模式自动关闭毛玻璃与过渡动效；
+- 新组件按需接入同一 Hook 即可保持全站一致的动效策略。
+
+---
+
+## 九、构建与开发命令
 
 | 命令                              | 说明                                             |
 | --------------------------------- | ------------------------------------------------ |
@@ -215,7 +399,7 @@ npm run typecheck
 
 ---
 
-## 六、常见问题与注意事项
+## 十、常见问题与注意事项
 
 1. **RUM 与脚本**：仓库内禁止手动插入 `<script>`（包括 `next/script`）。
    Cloudflare Web Analytics 的 RUM（`beacon.min.js` + `/cdn-cgi/rum`）由边缘自动注入，

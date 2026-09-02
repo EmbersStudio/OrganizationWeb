@@ -7,3 +7,10 @@
 - 组件文件使用 `PascalCase.tsx` 命名；
 - 需要客户端交互的组件在文件顶部声明 `'use client';`；
 - 组件专属样式使用同名 `*.module.css`（CSS Modules）。
+
+基础元件库：
+
+- `src/components/ui/button/` —— Button（variant/size/icon/shape 等参数，可完全留空）；
+- `src/components/ui/card/` —— Card（variant/radius/padding/shadow 容器参数）；
+- `src/components/ui/dropdown/` —— Dropdown（触发器 + Card 面板，items/children 两种内容）。
+- `site-nav.tsx` —— 基于上述元件的顶部导航栏（数据来自 `src/config/navigation.ts`）。

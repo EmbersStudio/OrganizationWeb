@@ -35,9 +35,14 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
   无 HTML 模板字符串、无内联/手动 `<script>` 标签（Cloudflare RUM 由边缘自动注入，仓库不手动干预）；
 - **后端**：Next.js Route Handlers（`/api/data`）+ 可扩展爬虫脚本框架；
 - **缓存**：Cloudflare KV（缓存优先模式，本地开发自动使用内存模拟）；
-- **导航/交互**：页面互链 + 键盘快捷键（`h` 首页 / `a` 关于页），路径统一由路由注册表管理。
+- **导航/交互**：统一顶部导航栏（基于 Card/Button/Dropdown 元件，支持激活页下划线、溢出折叠“更多”菜单）
+  与键盘快捷键（`h` 首页 / `a` 关于页）；
+- **国际化**：内置轻量 i18n（`src/locales` 中英文案 + `I18nProvider`），导航栏语言切换即时生效并持久化；
+- **基础元件库**：`src/components/ui/` 提供参数化的 `Button` / `Card` / `Dropdown`，支持外部样式覆盖；
+- **响应式与性能**：`src/utils/device.ts` 设备检测 + `usePerformanceMode`，移动端自动简化动效。
 
 > 详细开发指南（页面创建、导航注册、按键绑定、目录规范等）请参阅 [BUILD_GUIDE.md](./BUILD_GUIDE.md)。
+> 基础元件使用、导航栏配置、i18n 新增语言与设备检测动效策略的说明也收录于 BUILD_GUIDE 第五～八章。
 
 ---
 
@@ -57,6 +62,10 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
 - **缓存优先数据接口**：`GET /api/data?script=<name>` 先查 KV，命中直接返回；未命中执行脚本并写缓存；
 - **爬虫脚本框架**：在 `src/scripts/` 实现 `ScraperScript` 并注册到 `config/scripts.ts` 即可扩展；
 - **键盘快捷键**：`src/router/keymap.ts` 一处配置，全局监听跳转页面；
+- **UI 元件**：`Button` / `Card` / `Dropdown` 基础元件库（`src/components/ui/`），每个元件自带默认 CSS Module 样式；
+- **导航栏**：Card 容器顶部导航，滑动下划线指示当前页，链接溢出自动折叠到“更多”菜单；
+- **i18n**：中英文语言文件（`src/locales/`），导航栏右侧语言切换，选择结果存 localStorage；
+- **性能适配**：`getDeviceType()` 优先按视口宽度判断设备，`usePerformanceMode()` 供组件按设备关闭复杂动效；
 - **RUM**：Cloudflare Web Analytics 由边缘自动注入（`beacon.min.js` + `/cdn-cgi/rum`），仓库内不做任何手动干预。
 
 ---
@@ -159,11 +168,13 @@ curl "https://<your-domain>/api/data?script=example"
 ├── public/                # 静态资源（图片/字体/_headers）
 ├── src/
 │   ├── app/               # Next.js App Router（page.tsx / layout.tsx / api/）
-│   ├── views/             # 页面组件（每个页面一个文件夹：TSX + CSS Module）
-│   ├── components/        # 公共组件
+│   ├── views/             # 页面组件（index.ts 统一导出；每个页面一个文件夹：TSX + CSS Module）
+│   ├── components/        # 公共组件（含 ui/ 基础元件库、site-nav.tsx）
+│   ├── config/            # 前端配置（navigation.ts：站点名/导航顺序/文案键）
+│   ├── i18n/              # 轻量 i18n（I18nProvider / useI18n）
+│   ├── locales/           # 翻译文件（zh.json / en.json）
 │   ├── hooks/             # 自定义 Hooks
-│   ├── utils/             # 工具函数
-│   ├── router/            # 路由注册表 + 快捷键映射
+│   ├── utils/             # 工具函数（device.ts 设备检测）
 │   ├── styles/            # 全局样式（globals.css / custom/theme.css）
 │   ├── types/             # 共享类型定义
 │   ├── lib/               # 核心库（KV、缓存管理器等）
