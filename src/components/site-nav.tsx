@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -51,6 +51,36 @@ export default function SiteNav() {
 
   const activeId = activeEntry?.id ?? null;
 
+  // 下划线动画
+  const [resizeKey, setResizeKey] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const container = navTrackRef.current;
+    if (!container) return;
+
+    const handleResize = () => {
+      // 清除之前的定时器，实现防抖
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => {
+        setResizeKey(prev => prev + 1);
+      }, 300); // 防抖延迟 300ms
+    };
+
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+      // 组件卸载时清理定时器，防止内存泄漏
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
   // 测量激活链接位置，驱动下划线滑动
   useLayoutEffect(() => {
     const indicator = indicatorRef.current;
@@ -66,7 +96,7 @@ export default function SiteNav() {
     indicator.style.width = activeLink.offsetWidth + 'px';
     indicator.style.transform = 'translateX(' + activeLink.offsetLeft + 'px)';
     indicator.style.opacity = '1';
-  }, [activeId, hiddenIds]);
+  }, [activeId, hiddenIds, resizeKey]);
 
   const setItemRef = (id: string) => (element: HTMLAnchorElement | null) => {
     itemRefsRef.current.set(id, element);
