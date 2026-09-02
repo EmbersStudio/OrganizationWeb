@@ -6,6 +6,8 @@
 
 :root {
   color-scheme: dark;
+  /* 顶部导航栏占用高度（页面内容区域据此预留空间） */
+  --site-nav-height: 4.5rem;
 }
 
 body {

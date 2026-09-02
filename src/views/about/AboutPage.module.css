@@ -1,6 +1,6 @@
 /* 基础字体/颜色/行高由 src/styles/globals.css 统一提供（CSS 模块化拆分） */
 .pageWrap {
-  min-height: 100vh;
+  min-height: calc(100dvh - var(--site-nav-height, 4.5rem));
   display: flex;
   align-items: center;
   justify-content: center;
