@@ -100,13 +100,15 @@ export default function SiteNav() {
 
   return (
     <header className={[styles.header, animationsEnabled ? '' : styles.lowMotion].filter(Boolean).join(' ')}>
-      <Card variant="elevated" radius="xl" padding="none" shadow="md" className={styles.bar}>
-        <div className={styles.inner}>
-          <Link className={styles.brand} href="/" aria-label={t('nav.brandAria', { site: SITE_NAME })}>
-            <span className={styles.brandMark} aria-hidden="true" />
-            <span className={styles.brandName}>{SITE_NAME}</span>
-          </Link>
+      {/* 左侧组织名称：直接融入页面，不包背景卡片 */}
+      <Link className={styles.brand} href="/" aria-label={t('nav.brandAria', { site: SITE_NAME })}>
+        <span className={styles.brandMark} aria-hidden="true" />
+        <span className={styles.brandName}>{SITE_NAME}</span>
+      </Link>
 
+      {/* 中间紧凑导航胶囊：仅包裹链接（+溢出“更多”） */}
+      <div className={styles.navCenter}>
+        <Card variant="elevated" radius="xl" padding="sm" shadow="md" className={styles.navPill}>
           <nav ref={navTrackRef} className={styles.navTrack} aria-label={t('nav.aria')}>
             <div ref={linkListRef} className={styles.linkList}>
               <span ref={indicatorRef} className={styles.indicator} aria-hidden="true" />
@@ -131,30 +133,32 @@ export default function SiteNav() {
             </div>
           </nav>
 
-          <div className={styles.actions}>
+          {needsMore && (
             <Dropdown
               trigger={
-                <Button variant="ghost" size="sm" shape="square" aria-label={t('language.switchAria')}>
-                  {currentLocale.shortLabel}
+                <Button variant="ghost" size="sm" shape="square">
+                  {t('nav.more')}
                 </Button>
               }
-              items={languageItems}
+              items={moreItems}
               align="end"
             />
-            {needsMore && (
-              <Dropdown
-                trigger={
-                  <Button variant="ghost" size="sm" shape="square">
-                    {t('nav.more')}
-                  </Button>
-                }
-                items={moreItems}
-                align="end"
-              />
-            )}
-          </div>
-        </div>
-      </Card>
+          )}
+        </Card>
+      </div>
+
+      {/* 右侧操作区：语言切换独立于卡片，圆角矩形按钮 */}
+      <div className={styles.actions}>
+        <Dropdown
+          trigger={
+            <Button variant="outline" size="sm" shape="rounded" aria-label={t('language.switchAria')}>
+              {currentLocale.shortLabel}
+            </Button>
+          }
+          items={languageItems}
+          align="end"
+        />
+      </div>
     </header>
   );
 }
