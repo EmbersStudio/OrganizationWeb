@@ -12,8 +12,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * 关于页：渲染 src/views/about/AboutPage（原 about.html 迁移），
- * “返回首页”链接目标取自路由注册表。
+ * 关于页：渲染 src/views/about/AboutPage
  */
 export default function About() {
   return <AboutPage backHref={getPagePath('home')} />;

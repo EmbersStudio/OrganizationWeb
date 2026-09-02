@@ -1,11 +1,11 @@
 # BUILD_GUIDE · 构建与开发指南
 
-本项目已迁移为 **纯 TypeScript + React（Next.js App Router）+ CSS Modules** 开发体系：
+本项目为 **纯 TypeScript + React（Next.js App Router）+ CSS Modules** 开发体系：
 
-- 所有页面由 **TSX 组件** 生成 DOM（不再有 HTML 模板字符串 / `dangerouslySetInnerHTML`）；
+- 所有页面由 **TSX 组件** 生成 DOM；
 - 所有业务逻辑、事件绑定、路由、快捷键均由 **TypeScript** 编写并随构建产物打包；
 - 全局基础样式在入口统一导入，页面/组件专属样式使用 **CSS Modules**（自动哈希隔离）；
-- 仓库内**不再手动插入任何 `<script>` 标签**（Cloudflare RUM 由边缘自动注入，勿手动干预）。
+- **不手动插入任何 `<script>` 标签**（Cloudflare RUM 由边缘自动注入，勿手动干预）。
 
 ---
 
@@ -54,13 +54,6 @@
 | Hooks       | `use-<name>.ts`                               | `use-key-navigation.ts` |
 | 工具/常量   | kebab-case                                    | `format-date.ts`        |
 | 路由注册 id | kebab-case 小写                               | `home`、`about`         |
-
-> 入口说明：Next.js App Router 中 `src/app/layout.tsx` 等价于 Vite 项目的
-> `main.tsx`——全局样式在此导入，根组件与全局监听（如快捷键）在此挂载。
->
-> ⚠️ 为什么用 `src/views` 而不是 `src/pages`：`src/pages` 是 Next.js **Pages Router**
-> 的保留目录，放入非页面文件会触发旧版路由类型校验失败；本项目基于 App Router，
-> 因此页面组件统一放在 `src/views`（目录职责不变，仅规避保留目录冲突）。
 
 ---
 
@@ -175,7 +168,7 @@ export default function Projects() {
 > 原则：页面路径只在 `routes.tsx` 写一次；导航栏组件（`SiteNav`）读取
 > `NAV_ITEMS`（路径由配置从注册表解析），文案统一走 i18n，不硬编码。
 >
-> ⚠️ 页面组件统一放 `src/views`，不要放 `src/pages`（Pages Router 保留目录）。
+> 注意: 页面组件统一放 `src/views`，不要放 `src/pages`（Pages Router 保留目录）。
 
 ---
 
@@ -380,7 +373,7 @@ const { animationsEnabled } = usePerformanceMode();
 | 命令                              | 说明                                             |
 | --------------------------------- | ------------------------------------------------ |
 | `npm install`                     | 安装依赖                                         |
-| `npm run dev`                     | 启动开发服务器（http://localhost:3000）          |
+| `npm run dev`                     | 启动开发服务器（<http://localhost:3000）>          |
 | `npm run build`                   | Next.js 生产构建                                 |
 | `npm run build:opennext`          | OpenNext 完整构建（生成 `.open-next/worker.js`） |
 | `npm run preview`                 | Wrangler 本地预览（模拟 Cloudflare 环境）        |

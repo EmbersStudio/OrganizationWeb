@@ -13,8 +13,6 @@ interface HomePageProps {
 
 /**
  * 首页：EmbersStudio 品牌主页。
- *
- * 客户端组件：文案经 I18nProvider 翻译（语言切换即时生效）。
  */
 export default function HomePage({ nextHref = '/about' }: HomePageProps) {
   const { t } = useI18n();

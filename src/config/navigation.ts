@@ -1,8 +1,8 @@
 /**
- * 导航与站点配置（纯数据，不含 UI 逻辑）。
+ * 导航与站点配置
  *
- * 路径一律取自 src/router/routes.tsx 的路由注册表（不在此硬编码），
- * 展示文案使用 i18n 翻译键（见 src/locales/*.json）。
+ * 路径一律取自 src/router/routes.tsx 的路由注册表
+ * 展示文案使用 i18n 翻译键（见 src/locales/*.json）
  */
 
 import { PAGE_REGISTRY } from '@/router/routes';
@@ -17,8 +17,6 @@ export interface NavItem {
   labelKey: string;
 }
 
-/* ============ 配置（集中在此，便于增删/调整顺序） ============ */
-
 /** 站点名称 */
 export const SITE_NAME = 'EmbersStudio';
 
@@ -30,8 +28,6 @@ const NAV_ORDER: readonly { id: string; labelKey: string }[] = [
   { id: 'home', labelKey: 'nav.home' },
   { id: 'about', labelKey: 'nav.about' },
 ];
-
-/* ========================================================== */
 
 /** 解析页面路径；注册表缺失时抛出错误保证配置同步 */
 function resolveRoute(id: string): string {

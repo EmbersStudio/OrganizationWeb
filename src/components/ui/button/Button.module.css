@@ -39,7 +39,7 @@
   transform: none;
 }
 
-/* ---- 外形 ---- */
+/* 外形 */
 .shapeRounded {
   border-radius: 0.6rem;
 }
@@ -52,7 +52,7 @@
   width: 100%;
 }
 
-/* ---- 尺寸 ---- */
+/* 尺寸 */
 .sizeSm {
   height: 2rem;
   padding: 0 0.7rem;
@@ -72,7 +72,7 @@
   font-size: 1rem;
 }
 
-/* ---- 变体 ---- */
+/* 变体 */
 .variantPrimary {
   background: linear-gradient(120deg, #ffd9a0 0%, #ffb86c 100%);
   color: #17130c;
@@ -119,7 +119,7 @@
   color: #ffb3b3;
 }
 
-/* ---- 内容 ---- */
+/* 内容 */
 .label {
   display: inline-flex;
   align-items: center;

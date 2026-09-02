@@ -5,9 +5,6 @@
 | `kv.ts`            | KV 操作封装：Cloudflare 环境使用真实 KV，本地开发自动切换内存模拟 |
 | `cache-manager.ts` | 缓存优先（cache-first）逻辑：命中返回缓存，未命中抓取并写缓存     |
 
-> 迁移说明：原 `html-loader.ts`（HTML 页面加载器）已随「纯 TypeScript + TSX 组件」迁移移除，
-> 页面内容现由 `src/views/**` 的 TSX 组件直接渲染。
-
 ## kv.ts
 
 - `kvGet(key): Promise<string | null>` / `kvSet(key, value, ttlSeconds?): Promise<void>`

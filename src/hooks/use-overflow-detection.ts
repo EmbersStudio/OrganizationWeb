@@ -62,7 +62,7 @@ export function useOverflowDetection<T extends HTMLElement>({
       return;
     }
 
-    // 1. 采集当前可见子项的真实宽度到缓存
+    // 采集当前可见子项的真实宽度到缓存
     for (const id of itemIds) {
       const element = itemRefs.current?.get(id) ?? null;
       if (element && element.offsetWidth > 0) {
@@ -70,7 +70,7 @@ export function useOverflowDetection<T extends HTMLElement>({
       }
     }
 
-    // 2. 从前往后放置子项，放不下的全部折叠
+    // 从前往后放置子项，放不下的全部折叠
     const available = Math.max(0, container.clientWidth - slack);
     const nextHidden: string[] = [];
     let used = 0;

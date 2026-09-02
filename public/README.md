@@ -5,10 +5,7 @@
 - `public/images/logo.png` → `/images/logo.png`
 - `public/_headers` → Cloudflare Workers Static Assets 响应头规则
 
-> 迁移说明：旧的手动脚本（`public/scripts/**`）与页面级 CSS（`public/styles/pages/**`）
-> 已随「纯 TypeScript + CSS Modules」改造移除。所有前端逻辑与样式均来自
-> `src/views` / `src/components` / `src/hooks`（经 Next.js 打包），
-> 本目录仅保留真正需要原样发布的静态文件与边缘配置。
+> 本目录仅保留真正需要原样发布的静态文件与边缘配置
 
 ## 常用用途
 
@@ -24,4 +21,4 @@
 2. 在代码中以根路径引用：`/images/logo.png`。
 
 > 组件内的图片、字体等资源如无特殊需要，也可直接放在 `src/views/**` 同目录下
-> 由构建工具处理（自动哈希、缓存友好）。
+> 由构建工具处理

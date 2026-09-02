@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   const scriptName = url.searchParams.get('script') ?? 'example';
   console.log(`[API] GET /api/data?script=${scriptName}`);
 
-  // 1. 校验脚本是否存在/启用
+  // 校验脚本是否存在/启用
   const script = scripts.find((item) => item.name === scriptName);
   if (!script) {
     console.warn(`[API] 脚本不存在: ${scriptName}`);
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: `Script disabled: ${scriptName}` }, { status: 403 });
   }
 
-  // 2. 缓存优先逻辑（cache-manager 封装）
+  // 缓存优先逻辑（cache-manager 封装）
   try {
     const cacheKey = `${CACHE_KEY_PREFIX}${scriptName}`;
     const { source, data } = await getCachedOrFetch(cacheKey, () => script.scrape(), cacheConfig.ttl);

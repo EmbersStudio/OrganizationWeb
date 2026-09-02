@@ -1,14 +1,5 @@
 /**
- * 页面组件统一导出（相当于页面注册表）。
- *
- * ⚠️ 不使用 src/pages/index.ts：src/pages 是 Next.js Pages Router 的保留目录，
- * 本项目基于 App Router，页面组件统一放在 src/views。
- *
- * 新增页面流程：
- * 1. 在 src/views/<name>/ 创建页面组件；
- * 2. 在本文件追加 named export（并视需要加入 PAGES 映射）；
- * 3. 在 src/router/routes.tsx 注册路由元信息；
- * 4. 在 src/app/<route>/page.tsx 中渲染。
+ * 页面组件统一导出（页面注册表）
  */
 
 import AboutPage from '@/views/about/AboutPage';

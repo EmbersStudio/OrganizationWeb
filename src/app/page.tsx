@@ -12,8 +12,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * 首页：渲染 src/views/home/HomePage（原 home.html 迁移），
- * “了解更多”链接目标取自路由注册表。
+ * 首页：渲染 src/views/home/HomePage
  */
 export default function Home() {
   return <HomePage nextHref={getPagePath('about')} />;

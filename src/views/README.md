@@ -14,4 +14,4 @@
 >
 > ⚠️ 为什么是 `src/views` 而不是 `src/pages`：`src/pages` 是 Next.js **Pages Router**
 > 的保留目录，会触发旧版页面路由类型校验；本项目使用 App Router，故使用 `src/views`
-> 承载页面组件（见 BUILD_GUIDE.md）。
+> 承载页面组件。

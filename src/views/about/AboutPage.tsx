@@ -21,7 +21,7 @@ const CONTACT_LINKS: readonly { key: string; href: string; external?: boolean }[
   { key: 'about.contactSite', href: 'https://embers-studio.crimsonseraph.top', external: true },
 ];
 
-/** 技术栈标签（专有名词，不翻译） */
+/** 技术栈标签 */
 const TECH_TAGS = [
   'Next.js',
   'TypeScript',
@@ -51,9 +51,6 @@ interface AboutPageProps {
 
 /**
  * 关于页：余烬工作室介绍。
- *
- * 客户端组件：成员卡片点击高亮交互 + 文案 i18n 翻译 +
- * 低功耗模式（移动端关闭毛玻璃与过渡动效）。
  */
 export default function AboutPage({ backHref = '/' }: AboutPageProps) {
   const { animationsEnabled } = usePerformanceMode();

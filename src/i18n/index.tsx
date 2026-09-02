@@ -25,8 +25,6 @@ export interface LocaleOption {
   shortLabel: string;
 }
 
-/* ============ 配置（集中在文件头部，便于修改） ============ */
-
 /** 默认语言 */
 export const DEFAULT_LOCALE: Locale = 'zh';
 
@@ -38,8 +36,6 @@ export const LOCALE_OPTIONS: readonly LocaleOption[] = [
   { code: 'zh', labelKey: 'language.zh', shortLabel: '中' },
   { code: 'en', labelKey: 'language.en', shortLabel: 'En' },
 ];
-
-/* ========================================================== */
 
 /** 嵌套翻译消息结构 */
 type NestedMessages = { [key: string]: string | NestedMessages };

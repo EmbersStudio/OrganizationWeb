@@ -13,7 +13,6 @@
 > - [九、贡献指南](#九贡献指南)
 > - [十、联系方式](#十联系方式)
 > - [十一、许可证](#十一许可证)
-> - [十二、截图](#十二截图)
 
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
@@ -29,7 +28,7 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
 
 ## 一、项目简介
 
-本项目已迁移为 **纯 TypeScript 开发体系**：
+本项目为 **纯 TypeScript 开发体系**：
 
 - **前端**：React（Next.js App Router）+ TypeScript + CSS Modules；页面由 TSX 组件渲染，
   无 HTML 模板字符串、无内联/手动 `<script>` 标签（Cloudflare RUM 由边缘自动注入，仓库不手动干预）；
@@ -107,7 +106,7 @@ npm run build:opennext
 
 构建产物位于 `.open-next/`（`worker.js` + 静态资源）。
 
-### 2. 本地预览（可选）
+### 2. 本地预览
 
 ```bash
 npm run preview   # 访问 http://127.0.0.1:8787
@@ -127,8 +126,6 @@ npm run deploy
 | 构建命令 | `npm run build:opennext`           |
 | 部署命令 | `npx wrangler deploy`              |
 | 构建变量 | `NODE_VERSION=22`                  |
-
-> ⚠️ 根目录必须指向源码目录（`/`），不是构建产物 `.open-next`（该目录已被 `.gitignore` 忽略）。
 
 ### 4. KV 命名空间
 
@@ -229,9 +226,3 @@ curl "https://<your-domain>/api/data?script=example"
 **本项目未选择任何开源许可证（Unlicensed）**，保留所有权利。
 
 > 组织内其他项目可能采用不同许可证，请以各仓库的 `LICENSE` 文件为准。
-
----
-
-## 十二、截图
-
-**暂无截图。**
