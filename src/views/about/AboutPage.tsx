@@ -52,7 +52,7 @@ interface AboutPageProps {
 /**
  * 关于页：余烬工作室介绍。
  */
-export default function AboutPage({ backHref = '/' }: AboutPageProps) {
+export default function AboutPage({ }: AboutPageProps) {
   const { animationsEnabled } = usePerformanceMode();
   const { t } = useI18n();
 
@@ -204,9 +204,6 @@ export default function AboutPage({ backHref = '/' }: AboutPageProps) {
                 </span>
               ))}
             </div>
-            <Link className={styles.pageLinkFlat} href={backHref}>
-              {t('about.backHome')}
-            </Link>
           </div>
 
           {/* 底部小字 */}

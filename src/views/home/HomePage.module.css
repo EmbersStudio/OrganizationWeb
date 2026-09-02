@@ -44,17 +44,6 @@
   text-align: center;
 }
 
-.homeLink {
-  color: #ffb86c;
-  text-decoration: none;
-  font-size: 1rem;
-  letter-spacing: 0.08em;
-  border-bottom: 1px solid rgba(255, 184, 108, 0.4);
-  transition:
-    color 0.2s,
-    border-color 0.2s;
-}
-
 .homeLink:hover {
   color: #ffffff;
   border-color: #ffb86c;

@@ -15,5 +15,5 @@ export const metadata: Metadata = {
  * 首页：渲染 src/views/home/HomePage
  */
 export default function Home() {
-  return <HomePage nextHref={getPagePath('about')} />;
+  return <HomePage />;
 }

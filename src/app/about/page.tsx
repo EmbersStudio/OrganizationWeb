@@ -15,5 +15,5 @@ export const metadata: Metadata = {
  * 关于页：渲染 src/views/about/AboutPage
  */
 export default function About() {
-  return <AboutPage backHref={getPagePath('home')} />;
+  return <AboutPage />;
 }

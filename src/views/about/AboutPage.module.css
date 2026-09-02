@@ -73,12 +73,6 @@
   border-bottom-color: #e8924e;
 }
 
-/* 返回首页链接（原内联 style="margin-top: 0"） */
-.pageLinkFlat {
-  composes: pageLink;
-  margin-top: 0;
-}
-
 /* 分割装饰 */
 .divider {
   margin: 2.4rem 0 2rem;

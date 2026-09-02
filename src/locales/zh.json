@@ -15,7 +15,6 @@
   "home": {
     "brand": "EmbersStudio",
     "slogan": "Creating Digital Wonders",
-    "learnMore": "了解更多 →",
     "footer": "© 2026 EmbersStudio · Powered by Next.js on Cloudflare"
   },
   "about": {
@@ -52,7 +51,6 @@
     "contactEmail": "📧 CrimsonSeraph.QwQ@gmail.com",
     "contactX": "🐦 X / Twitter",
     "contactSite": "🌐 embers-studio.crimsonseraph.top",
-    "backHome": "← 返回首页",
     "metaCopyright": "© 2026 EmbersStudio · 余烬工作室",
     "metaLicense": "⚡ 开源 · 各项目采用不同许可证，详见仓库 LICENSE"
   }
