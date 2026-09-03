@@ -12,5 +12,8 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
   }
 }
