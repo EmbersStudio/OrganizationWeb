@@ -39,7 +39,7 @@ export interface StarSkyConfig {
   starMinScale?: number;
   /** 星星移出容器多少像素后回收重放，默认 50 */
   overflowThreshold?: number;
-  /** 运动速度：扩散/收缩为纵深速度，旋转为角速度基准，默认 0.0009 */
+  /** 运动速度缩放系数，默认 1；扩散/收缩基准 0.0009、旋转基准 0.00009，实际值 = 基准 × speed */
   speed?: number;
   /** 星星整体运动模式，默认 expand（从中心点向外扩散） */
   mode?: StarSkyMode;
@@ -61,7 +61,7 @@ export const DEFAULT_STAR_SKY_CONFIG = {
   starSize: 3,
   starMinScale: 0.2,
   overflowThreshold: 50,
-  speed: 0.0009,
+  speed: 1,
   mode: 'expand',
   center: { x: 'mid', y: 'mid' },
   interactive: true,
@@ -70,11 +70,12 @@ export const DEFAULT_STAR_SKY_CONFIG = {
 } as const;
 
 /**
- * 旋转模式中把 speed 当作角速度基准时的放大倍数。
- * speed 默认值面向纵深运动（0.0009/帧）非常小，直接用作角速度会几乎看不出转动，
- * 因此旋转模式乘以该常数，同时按 star.z 缩放，让“近处”星星转得更快以体现纵深。
+ * 基础运动速度（speed 参数为缩放系数，实际速度 = 基准 × speed）：
+ * - 扩散/收缩：z 轴纵深速度 0.0009/帧；
+ * - 旋转：角速度 0.00009/帧（再按 star.z 缩放，近处星星转得更快以体现纵深）。
  */
-const ROTATE_SPEED_RATIO = 8;
+const BASE_DEPTH_SPEED = 0.0009;
+const BASE_ROTATE_SPEED = 0.00009;
 
 /** 背景渐变注入到 CSS Modules 的自定义属性名 */
 type StarSkyStyleVars = CSSProperties & {
@@ -215,7 +216,9 @@ export function StarSky({
     const lineSize = starSize ?? DEFAULT_STAR_SKY_CONFIG.starSize;
     const minScale = starMinScale ?? DEFAULT_STAR_SKY_CONFIG.starMinScale;
     const overflow = overflowThreshold ?? DEFAULT_STAR_SKY_CONFIG.overflowThreshold;
-    const zSpeed = speed ?? DEFAULT_STAR_SKY_CONFIG.speed;
+    // speed 为缩放系数：扩散/收缩用 0.0009，旋转用 0.00009，实际值 = 基准 × speed
+    const depthSpeed = (speed ?? DEFAULT_STAR_SKY_CONFIG.speed) * BASE_DEPTH_SPEED;
+    const rotateSpeed = (speed ?? DEFAULT_STAR_SKY_CONFIG.speed) * BASE_ROTATE_SPEED;
     const withTwinkle = twinkle ?? DEFAULT_STAR_SKY_CONFIG.twinkle;
     const withInteractive = interactive ?? DEFAULT_STAR_SKY_CONFIG.interactive;
 
@@ -233,8 +236,8 @@ export function StarSky({
     let stars: Star[] = [];
     let pointerX: number | null = null;
     let pointerY: number | null = null;
-    // 漂移速度（x/y 为惯性速度，tx/ty 为目标速度，z 为纵深/角速度基准）
-    const velocity = { x: 0, y: 0, tx: 0, ty: 0, z: zSpeed };
+    // 漂移速度（x/y 为惯性速度，tx/ty 为目标速度，z 为扩散/收缩的纵深速度）
+    const velocity = { x: 0, y: 0, tx: 0, ty: 0, z: depthSpeed };
     let frameId = 0;
 
     // 尊重系统“减少动态效果”偏好：仅静态绘制一次
@@ -298,6 +301,13 @@ export function StarSky({
         star.x = Math.random() * cssWidth;
         star.y = cssHeight + overflow;
       }
+    };
+
+    // 旋转模式下星星被指针漂移推出屏幕后：在画布内随机重生，
+    // 并恢复正常的 z（与扩散相反，绝不使用 z=0.1 的极淡星星，保证画面亮度/数量稳定）
+    const recycleRotateStar = (star: Star): void => {
+      star.z = minScale + Math.random() * (1 - minScale);
+      placeStar(star);
     };
 
     // 收缩模式下星星落入中心后：在屏幕边缘外重生，并恢复较大的 z（与扩散相反）
@@ -379,13 +389,15 @@ export function StarSky({
           const dy = star.y - centerPointY;
           const radius = Math.hypot(dx, dy);
           if (radius > 0.5) {
-            const angle = Math.atan2(dy, dx) + direction * velocity.z * ROTATE_SPEED_RATIO * star.z;
+            const angle = Math.atan2(dy, dx) + direction * rotateSpeed * star.z;
             star.x = centerPointX + Math.cos(angle) * radius;
             star.y = centerPointY + Math.sin(angle) * radius;
           }
-          // 仅当指针漂移把星星推出屏幕时才回收
+          // 旋转会沿圆周运动，星星可能短暂经过屏幕外；仅在指针漂移把它
+          // 彻底推出屏幕（超过 overflowThreshold）时，才在画布内重新生成，
+          // 保持星星总数与亮度不随时间衰减。
           if (isOutOfBounds(star)) {
-            recycleStar(star);
+            recycleRotateStar(star);
           }
         } else {
           // 默认 expand：从中心点向外扩散（z 逐渐变大，星星向四周飞散）
