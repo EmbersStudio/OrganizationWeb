@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(1200px 600px at 20% 0%, #1c2233 0%, #0d0f17 55%, #07080d 100%);
+  /* 背景交给星空层：保持透明，让 StarSky 画布上的星星透出 */
 }
 
 .brand {
@@ -47,4 +47,15 @@
 .homeLink:hover {
   color: #ffffff;
   border-color: #ffb86c;
+}
+
+.starSky {
+  width: 100%;
+  /* 占满导航栏以下的页面高度（与 bodyWrapper 一致），避免产生多余滚动 */
+  height: calc(100dvh - var(--site-nav-height, 4.5rem));
+}
+
+/* StarSky 内容层作为 flex 子项会收缩为内容宽度，这里让其占满整行 */
+.starSkyContent {
+  width: 100%;
 }
