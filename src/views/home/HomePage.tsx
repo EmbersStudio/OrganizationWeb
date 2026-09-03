@@ -28,7 +28,9 @@ export default function HomePage() {
       </Head>
       <StarSky
         className={styles.starSky}
-        mode="rotate-cw"
+        starSize={2}
+        speed={0.2}
+        mode="expand"
         center={{ x: 'left', y: 'bottom' }}
         interactive={false}
         backgroundColors={['#0a1432', '#3a1050', '#05050f']}
