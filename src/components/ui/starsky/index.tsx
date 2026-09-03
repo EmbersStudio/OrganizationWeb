@@ -5,9 +5,27 @@ import { useEffect, useRef, type CSSProperties, type HTMLAttributes, type ReactN
 import { Card, type CardProps } from '@/components/ui/card';
 import styles from './StarSky.module.css';
 
+/** 星星运动模式：从中心扩散 / 向中心收缩 / 绕中心旋转（顺、逆时针） */
+export type StarSkyMode = 'expand' | 'shrink' | 'rotate-cw' | 'rotate-ccw';
+
+/**
+ * 中心点横坐标：支持语义关键字（left=0 / mid、center=50% / right=100%）
+ * 或具体位置（px / % / number 视为 px）。
+ */
+export type StarSkyCenterX = 'left' | 'mid' | 'center' | 'right' | `${number}px` | `${number}%` | number;
+
+/** 中心点纵坐标：支持语义关键字（up=0 / mid、center=50% / bottom=100%）或具体位置 */
+export type StarSkyCenterY = 'up' | 'mid' | 'center' | 'bottom' | `${number}px` | `${number}%` | number;
+
+/** 中心点位置：x、y 分别对应水平与垂直方向 */
+export interface StarSkyCenter {
+  readonly x: StarSkyCenterX;
+  readonly y: StarSkyCenterY;
+}
+
 /**
  * 星空相关配置项。
- * 颜色、数量、尺寸等默认值集中在 DEFAULT_STAR_SKY_CONFIG，
+ * 颜色、数量、尺寸、中心点、运动模式等默认值集中在 DEFAULT_STAR_SKY_CONFIG，
  * 使用时传入对应字段即可覆盖，不传则采用默认配置。
  */
 export interface StarSkyConfig {
@@ -21,8 +39,12 @@ export interface StarSkyConfig {
   starMinScale?: number;
   /** 星星移出容器多少像素后回收重放，默认 50 */
   overflowThreshold?: number;
-  /** 纵深漂移速度（velocity.z），默认 0.0009 */
+  /** 运动速度：扩散/收缩为纵深速度，旋转为角速度基准，默认 0.0009 */
   speed?: number;
+  /** 星星整体运动模式，默认 expand（从中心点向外扩散） */
+  mode?: StarSkyMode;
+  /** 运动中心点位置，默认 { x: 'mid', y: 'mid' }（容器正中） */
+  center?: StarSkyCenter;
   /** 是否响应鼠标/触摸产生视差漂移，默认 true */
   interactive?: boolean;
   /** 是否让星星逐帧随机闪烁透明度，默认 true */
@@ -40,10 +62,19 @@ export const DEFAULT_STAR_SKY_CONFIG = {
   starMinScale: 0.2,
   overflowThreshold: 50,
   speed: 0.0009,
+  mode: 'expand',
+  center: { x: 'mid', y: 'mid' },
   interactive: true,
   twinkle: true,
   backgroundColors: ['#0a1432', 'rgba(40, 10, 60, 0.9)', '#05050f'] as const,
 } as const;
+
+/**
+ * 旋转模式中把 speed 当作角速度基准时的放大倍数。
+ * speed 默认值面向纵深运动（0.0009/帧）非常小，直接用作角速度会几乎看不出转动，
+ * 因此旋转模式乘以该常数，同时按 star.z 缩放，让“近处”星星转得更快以体现纵深。
+ */
+const ROTATE_SPEED_RATIO = 8;
 
 /** 背景渐变注入到 CSS Modules 的自定义属性名 */
 type StarSkyStyleVars = CSSProperties & {
@@ -71,6 +102,35 @@ export interface StarSkyCardProps extends StarSkyProps {
 /** 拼接类名（过滤空值） */
 function joinClass(...names: Array<string | false | null | undefined>): string {
   return names.filter(Boolean).join(' ');
+}
+
+/**
+ * 解析中心点锚点：关键字按 CSS 语义映射到 0 / 50% / 100%；
+ * 其余按 px / % / number（px）解析为具体坐标。
+ */
+function resolveAnchor(value: StarSkyCenterX | StarSkyCenterY, size: number): number {
+  if (typeof value === 'number') {
+    return value;
+  }
+  switch (value) {
+    case 'left':
+    case 'up':
+      return 0;
+    case 'mid':
+    case 'center':
+      return size / 2;
+    case 'right':
+    case 'bottom':
+      return size;
+    default:
+      break;
+  }
+  if (value.endsWith('%')) {
+    return (Number.parseFloat(value) / 100) * size;
+  }
+  // px 或直接数值字符串（模板字面量类型已保证 px 前为数字）
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 /** 计算根节点 style：注入背景渐变 CSS 变量，并保留外部 style */
@@ -105,6 +165,8 @@ interface Star {
  * - 无 children：仅渲染星空（纯背景），配合 className/style 控制尺寸，
  *   或使用 fullScreen 固定铺满视口；
  * - 有 children：内容默认居中叠加在星空之上（可放 Card 等任意组件）；
+ * - center 控制星星运动中心（默认正中），mode 控制整体运动模式：
+ *   expand 自中心扩散、shrink 向中心收缩、rotate-cw/rotate-ccw 绕中心旋转；
  * - 动画逻辑仿照 HTMLTest/index.html：星星带拖尾、鼠标/触摸产生视差漂移、
  *   星星数量默认按容器面积自动计算。
  */
@@ -120,6 +182,8 @@ export function StarSky({
   starMinScale,
   overflowThreshold,
   speed,
+  mode,
+  center,
   interactive,
   twinkle,
   backgroundColors,
@@ -128,6 +192,11 @@ export function StarSky({
 }: StarSkyProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // 解析运动中心与模式（缺省时回退到默认配置，保持现有“从中间扩散”行为）
+  const starMode = mode ?? DEFAULT_STAR_SKY_CONFIG.mode;
+  const centerX = center?.x ?? DEFAULT_STAR_SKY_CONFIG.center.x;
+  const centerY = center?.y ?? DEFAULT_STAR_SKY_CONFIG.center.y;
 
   // 星空动画：容器尺寸变化时重算画布与星星数量
   useEffect(() => {
@@ -157,11 +226,14 @@ export function StarSky({
     let cssWidth = 0;
     let cssHeight = 0;
     let dpr = 1;
+    // 运动中心点（由 center 参数解析后的实际坐标，resize 时随尺寸更新）
+    let centerPointX = 0;
+    let centerPointY = 0;
     // 星星列表与鼠标指针坐标
     let stars: Star[] = [];
     let pointerX: number | null = null;
     let pointerY: number | null = null;
-    // 漂移速度（x/y 为惯性速度，tx/ty 为目标速度，z 为纵深速度）
+    // 漂移速度（x/y 为惯性速度，tx/ty 为目标速度，z 为纵深/角速度基准）
     const velocity = { x: 0, y: 0, tx: 0, ty: 0, z: zSpeed };
     let frameId = 0;
 
@@ -184,7 +256,11 @@ export function StarSky({
       star.y = Math.random() * cssHeight;
     };
 
-    // 星星出界后按当前漂移方向回收，保证画面始终有星星补充
+    // 星星是否移出可视范围（含回收阈值）
+    const isOutOfBounds = (star: Star): boolean =>
+      star.x < -overflow || star.x > cssWidth + overflow || star.y < -overflow || star.y > cssHeight + overflow;
+
+    // 扩散模式下出界后按当前漂移方向回收，保证画面始终有星星补充
     const recycleStar = (star: Star): void => {
       let direction: 'z' | 'l' | 'r' | 't' | 'b' = 'z';
       const vx = Math.abs(velocity.x);
@@ -224,6 +300,25 @@ export function StarSky({
       }
     };
 
+    // 收缩模式下星星落入中心后：在屏幕边缘外重生，并恢复较大的 z（与扩散相反）
+    const recycleShrinkStar = (star: Star): void => {
+      star.z = 0.9 + Math.random() * 0.1;
+      const side = Math.floor(Math.random() * 4);
+      if (side === 0) {
+        star.x = -overflow;
+        star.y = Math.random() * cssHeight;
+      } else if (side === 1) {
+        star.x = cssWidth + overflow;
+        star.y = Math.random() * cssHeight;
+      } else if (side === 2) {
+        star.x = Math.random() * cssWidth;
+        star.y = -overflow;
+      } else {
+        star.x = Math.random() * cssWidth;
+        star.y = cssHeight + overflow;
+      }
+    };
+
     // 根据容器当前尺寸重建画布（高 DPI 下按 devicePixelRatio 放大）
     const resize = (): void => {
       const rect = canvas.getBoundingClientRect();
@@ -234,6 +329,10 @@ export function StarSky({
       canvas.height = Math.round(cssHeight * dpr);
       // 后续绘制统一使用 CSS 像素坐标系，由该变换放大到物理像素
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // 中心点按当前容器尺寸解析一次，供各运动模式使用
+      centerPointX = resolveAnchor(centerX, cssWidth);
+      centerPointY = resolveAnchor(centerY, cssHeight);
 
       const count = resolveCount(cssWidth, cssHeight);
       if (stars.length !== count) {
@@ -247,22 +346,57 @@ export function StarSky({
       }
     };
 
-    // 更新每颗星星位置与速度（惯性缓动 + 纵深缩放）
+    // 更新每颗星星位置与速度（按模式区分整体运动）
     const update = (): void => {
+      // 指针惯性缓动（所有模式通用）
       velocity.tx *= 0.96;
       velocity.ty *= 0.96;
       velocity.x += (velocity.tx - velocity.x) * 0.8;
       velocity.y += (velocity.ty - velocity.y) * 0.8;
-      stars.forEach((star) => {
+
+      for (const star of stars) {
+        // 指针造成的整体漂移（所有模式保留，用于视差反馈）
         star.x += velocity.x * star.z;
         star.y += velocity.y * star.z;
-        star.x += (star.x - cssWidth / 2) * velocity.z * star.z;
-        star.y += (star.y - cssHeight / 2) * velocity.z * star.z;
-        star.z += velocity.z;
-        if (star.x < -overflow || star.x > cssWidth + overflow || star.y < -overflow || star.y > cssHeight + overflow) {
-          recycleStar(star);
+
+        if (starMode === 'shrink') {
+          // 收缩：位置与 z 的变化均与“扩散”相反（z 逐渐变小，星星向中心落入）
+          const shrinkVz = -velocity.z;
+          star.x += (star.x - centerPointX) * shrinkVz * star.z;
+          star.y += (star.y - centerPointY) * shrinkVz * star.z;
+          star.z += shrinkVz;
+          const dx = star.x - centerPointX;
+          const dy = star.y - centerPointY;
+          // z 过小或已贴近中心时回收，在边缘外重新“吸入”
+          if (star.z <= 0.02 || dx * dx + dy * dy < 25) {
+            recycleShrinkStar(star);
+          }
+        } else if (starMode === 'rotate-cw' || starMode === 'rotate-ccw') {
+          // 旋转：只改变绕中心的角度（近处 z 大转得快，体现纵深）；
+          // z 本身不再增大/减小，即星星不会被拉近或拉远。
+          const direction = starMode === 'rotate-cw' ? 1 : -1;
+          const dx = star.x - centerPointX;
+          const dy = star.y - centerPointY;
+          const radius = Math.hypot(dx, dy);
+          if (radius > 0.5) {
+            const angle = Math.atan2(dy, dx) + direction * velocity.z * ROTATE_SPEED_RATIO * star.z;
+            star.x = centerPointX + Math.cos(angle) * radius;
+            star.y = centerPointY + Math.sin(angle) * radius;
+          }
+          // 仅当指针漂移把星星推出屏幕时才回收
+          if (isOutOfBounds(star)) {
+            recycleStar(star);
+          }
+        } else {
+          // 默认 expand：从中心点向外扩散（z 逐渐变大，星星向四周飞散）
+          star.x += (star.x - centerPointX) * velocity.z * star.z;
+          star.y += (star.y - centerPointY) * velocity.z * star.z;
+          star.z += velocity.z;
+          if (isOutOfBounds(star)) {
+            recycleStar(star);
+          }
         }
-      });
+      }
     };
 
     // 绘制一帧星星（带拖尾；twinkle 开启时逐帧随机透明度）
@@ -391,7 +525,19 @@ export function StarSky({
       container.removeEventListener('touchend', handleTouchEnd);
       container.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, [starColor, starCount, starSize, starMinScale, overflowThreshold, speed, interactive, twinkle]);
+  }, [
+    starColor,
+    starCount,
+    starSize,
+    starMinScale,
+    overflowThreshold,
+    speed,
+    starMode,
+    centerX,
+    centerY,
+    interactive,
+    twinkle,
+  ]);
 
   return (
     <div
