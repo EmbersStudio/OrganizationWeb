@@ -7,7 +7,6 @@ import { useI18n } from '@/i18n';
 import { usePageMeta } from '@/hooks/use-page-meta';
 import { usePerformanceMode } from '@/utils/device';
 import { MEMBERS, type Member } from './members';
-import { DecryptReveal } from '@/components/DecryptReveal';
 import styles from './AboutPage.module.css';
 
 /** 组织仓库地址 */
@@ -54,7 +53,7 @@ interface AboutPageProps {
 /**
  * 关于页：余烬工作室介绍。
  */
-export default function AboutPage({}: AboutPageProps) {
+export default function AboutPage({ }: AboutPageProps) {
   const { animationsEnabled } = usePerformanceMode();
   const { t } = useI18n();
   const { title, description } = usePageMeta('about');
@@ -153,15 +152,7 @@ export default function AboutPage({}: AboutPageProps) {
                 {t('about.membersHeading')}
                 <span>{t('about.membersHeadingSub')}</span>
               </h3>
-              {/* 容器模式：DecryptReveal 自动为行内每张头像叠加解密效果，其余文案/交互保持原样 */}
-              <DecryptReveal
-                className={styles.memberRow}
-                radius={100}
-                softness={0.5}
-                color="#4ade80"
-                scramble={0.12}
-                cell={5}
-              >
+              <div className={styles.memberRow}>
                 {MEMBERS.map((member) => (
                   <div
                     key={member.id}
@@ -174,21 +165,15 @@ export default function AboutPage({}: AboutPageProps) {
                       .join(' ')}
                     onClick={() => handleChipClick(member)}
                   >
-                    {/* 保持普通 img + lazy 加载；crossOrigin 允许把头像绘制进 WebGL 内容层 */}
+                    {/* 保持原 about.html 的普通 img + lazy 加载，避免引入 next/image 优化行为变化 */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      className={styles.memberImg}
-                      src={`https://unavatar.io/github/${member.github}`}
-                      alt={member.name}
-                      loading="lazy"
-                      crossOrigin="anonymous"
-                    />
+                    <img src={'https://github.com/' + member.github + '.png'} alt={member.name} loading="lazy" />
                     <span className={styles.memberName}>{member.name}</span>
                     <span className={styles.memberBadge}>{t(member.badgeKey)}</span>
                     <span className={styles.memberRole}>{t(member.roleKey)}</span>
                   </div>
                 ))}
-              </DecryptReveal>
+              </div>
               <p className={styles.contributorsNote}>
                 {t('about.contributorsNote')}{' '}
                 <a className={styles.contributorsLink} href={CONTRIBUTORS_URL} target="_blank" rel="noopener">
