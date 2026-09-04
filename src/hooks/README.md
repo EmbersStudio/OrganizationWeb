@@ -14,4 +14,5 @@
 - `use-overflow-detection.ts` —— 测量容器/子项宽度，返回应折叠进“更多”的项；
 - `use-performance-mode.ts` —— 设备/系统动效偏好，返回是否启用完整动效；
 - `use-page-meta.ts` —— 根据当前语言从路由注册表中获取页面标题和描述，用于 `next/head` 动态更新。
-- `use-decrypt-reveal.ts` —— WebGL2 解密揭示组件核心逻辑：图片上传、渲染循环、指针平滑与尺寸管理（配合 `src/components/DecryptReveal`）。
+- `use-decrypt-reveal.ts` —— WebGL2 解密揭示组件单图模式：图片上传、渲染循环、指针平滑与尺寸管理。
+- `use-decrypt-reveal-content.ts` —— WebGL2 解密揭示组件容器模式：扫描 children 中的 `<img>` 并逐张叠加解密效果层（图片自身样式/圆角/object-fit 保持生效）。

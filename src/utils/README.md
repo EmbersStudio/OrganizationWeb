@@ -16,3 +16,6 @@
 - `color.ts` —— `hexToRgb()` 将 `#rrggbb` 颜色解析为 0~1 浮点数组（供 WebGL uniform 使用）。
 - `texture-generators.ts` —— 字符形状纹理（R32F）与字符图集（RGBA）生成，
   共享 ASCII 字符集与版式，供 DecryptReveal 组件使用。
+- `decrypt-reveal-renderer.ts` —— DecryptReveal 的 WebGL 渲染引擎类（单图/多图共用）。
+- `decrypt-reveal-props.ts` —— DecryptReveal 参数默认值合并（渲染期全量参数）。
+- `image-fit.ts` —— CSS object-fit / object-position 的 Canvas 2D 复刻。
