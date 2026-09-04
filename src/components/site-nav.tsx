@@ -138,7 +138,7 @@ export default function SiteNav() {
 
       {/* 中间紧凑导航胶囊：仅包裹链接（+溢出“更多”） */}
       <div className={styles.navCenter}>
-        <Card variant="elevated" radius="xl" padding="sm" shadow="md" className={styles.navPill}>
+        <Card variant="elevated" radius="lg" padding="sm" shadow="md" className={styles.navPill}>
           <nav ref={navTrackRef} className={styles.navTrack} aria-label={t('nav.aria')}>
             <div ref={linkListRef} className={styles.linkList}>
               <span ref={indicatorRef} className={styles.indicator} aria-hidden="true" />
@@ -154,7 +154,7 @@ export default function SiteNav() {
                     ref={setItemRef(entry.id)}
                     href={entry.href}
                     aria-current={active ? 'page' : undefined}
-                    className={[styles.navLink, active ? styles.navLinkActive : null].filter(Boolean).join(' ')}
+                    className={[styles.navLink, active ? styles.navLinkActive : styles.navLinkNormal].filter(Boolean).join(' ')}
                   >
                     {t(entry.labelKey)}
                   </Link>

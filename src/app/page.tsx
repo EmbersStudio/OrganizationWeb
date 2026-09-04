@@ -7,12 +7,11 @@ import { requirePageRoute } from '@/router/routes';
 const homeRoute = requirePageRoute('home');
 
 export async function generateMetadata() {
-  const route = requirePageRoute('home');
   const cookieStore = await cookies();
   const locale = (cookieStore.get('embersstudio.locale')?.value as 'zh' | 'en') || 'zh';
   return {
-    title: route.title[locale],
-    description: route.description?.[locale] ?? '',
+    title: homeRoute.title[locale],
+    description: homeRoute.description?.[locale] ?? '',
   };
 }
 /**
