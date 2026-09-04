@@ -13,3 +13,6 @@
   `'mobile' | 'tablet' | 'desktop'`；同时便捷重导出
   `usePerformanceMode()`（Hook 本体位于 `src/hooks/use-performance-mode.ts`，
   遵循“utils 不放 React 实现”的约定）。
+- `color.ts` —— `hexToRgb()` 将 `#rrggbb` 颜色解析为 0~1 浮点数组（供 WebGL uniform 使用）。
+- `texture-generators.ts` —— 字符形状纹理（R32F）与字符图集（RGBA）生成，
+  共享 ASCII 字符集与版式，供 DecryptReveal 组件使用。
