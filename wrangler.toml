@@ -4,6 +4,18 @@ main = ".open-next/worker.js"
 compatibility_date = "2026-08-01"
 compatibility_flags = ["nodejs_compat"]
 
+# 与 Cloudflare Dashboard 保持一致：仅使用自定义域名，不暴露 workers.dev
+workers_dev = false
+preview_urls = false
+
+# 非机密运行变量（机密保持放在 Dashboard → 变量与机密中）
+[vars]
+BETTER_AUTH_URL = "https://embers-studio.crimsonseraph.top"
+GITHUB_CLIENT_ID = "Ov23liI1eeoAs4O4oeX0"
+
+[observability]
+enabled = true
+
 # OpenNext 构建产物中的静态资源（部署到 Cloudflare Pages/Workers 静态资源）
 assets = { directory = ".open-next/assets", binding = "ASSETS" }
 

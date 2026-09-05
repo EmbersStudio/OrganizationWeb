@@ -3,9 +3,12 @@
  *
  * 所有 /api/auth/* 请求（登录、注册、登出、会话、验证、OAuth 回调等）
  * 都会进入 auth(env).handler()，由 Better Auth 内部路由分发。
+ *
+ * 注意：这里不能声明 export const runtime = 'edge'。
+ * @opennextjs/cloudflare 尚不支持 Edge Runtime，声明后该路由会被标记为
+ * "app-edge-has-no-entrypoint" 而不打进 server-functions bundle，
+ * 导致 /api/auth/* 全部返回 500（loadComponentsImpl 加载不到路由模块）。
  */
-export const runtime = 'edge';
-
 import {auth} from '@/lib/auth';
 import {getCloudflareContext} from '@opennextjs/cloudflare';
 
