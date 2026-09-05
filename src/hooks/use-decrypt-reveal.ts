@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import {useCallback, useEffect, useRef, useState, type RefObject} from 'react';
 
-import type { DecryptRevealRuntimeProps, ResolvedDecryptRevealProps } from '@/types/decrypt-reveal';
-import { resolveDecryptRevealProps } from '@/utils/decrypt-reveal-props';
-import { DecryptRevealRenderer } from '@/utils/decrypt-reveal-renderer';
+import type {DecryptRevealRuntimeProps, ResolvedDecryptRevealProps} from '@/types/decrypt-reveal';
+import {resolveDecryptRevealProps} from '@/utils/decrypt-reveal-props';
+import {DecryptRevealRenderer} from '@/utils/decrypt-reveal-renderer';
 
 /**
  * DecryptReveal 加载状态：
@@ -13,16 +13,16 @@ import { DecryptRevealRenderer } from '@/utils/decrypt-reveal-renderer';
  * - ready：WebGL 资源就绪，渲染循环运行中；
  * - error：图片加载失败、WebGL2 不可用或 R32F 不受支持。
  */
-export type DecryptRevealLoadState = 'idle' | 'loading' | 'ready' | 'error';
+export type DecryptRevealLoadState = 'idle'|'loading'|'ready'|'error';
 
 /** useDecryptReveal 返回值 */
 export interface UseDecryptRevealResult {
   /** 外层容器引用（组件挂载到 root div） */
-  containerRef: RefObject<HTMLDivElement | null>;
+  containerRef: RefObject<HTMLDivElement|null>;
   /** 可见 WebGL canvas 引用 */
-  canvasRef: RefObject<HTMLCanvasElement | null>;
+  canvasRef: RefObject<HTMLCanvasElement|null>;
   /** 隐藏内容缓存 canvas 引用（图片先绘制到 2D canvas 再上传 GPU） */
-  contentCanvasRef: RefObject<HTMLCanvasElement | null>;
+  contentCanvasRef: RefObject<HTMLCanvasElement|null>;
   /** 当前加载状态 */
   loadState: DecryptRevealLoadState;
   /** 重新加载当前 image（图片加载失败后调用） */
@@ -43,10 +43,11 @@ export interface UseDecryptRevealResult {
  * - 其余视觉参数经 ref 保存最新值，渲染循环逐帧读取；
  * - 内容纹理只在图片加载完成后上传一次。
  */
-export function useDecryptReveal(props: DecryptRevealRuntimeProps): UseDecryptRevealResult {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const contentCanvasRef = useRef<HTMLCanvasElement | null>(null);
+export function useDecryptReveal(props: DecryptRevealRuntimeProps):
+    UseDecryptRevealResult {
+  const containerRef = useRef<HTMLDivElement|null>(null);
+  const canvasRef = useRef<HTMLCanvasElement|null>(null);
+  const contentCanvasRef = useRef<HTMLCanvasElement|null>(null);
 
   const [loadState, setLoadState] = useState<DecryptRevealLoadState>('idle');
   // 每次图片成功绘制到内容 canvas 后 +1，驱动 WebGL 重新初始化
@@ -61,7 +62,7 @@ export function useDecryptReveal(props: DecryptRevealRuntimeProps): UseDecryptRe
     resolvedRef.current = resolved;
   });
 
-  const { image, cell, aspect } = resolved;
+  const {image, cell, aspect} = resolved;
 
   // 图片加载：绘制到隐藏 canvas（原始尺寸，跨域图片需服务器返回 CORS 头）
   useEffect(() => {
@@ -109,16 +110,17 @@ export function useDecryptReveal(props: DecryptRevealRuntimeProps): UseDecryptRe
     }
     const canvas = canvasRef.current;
     const contentCanvas = contentCanvasRef.current;
-    if (!canvas || !contentCanvas || contentCanvas.width < 1 || contentCanvas.height < 1) {
+    if (!canvas || !contentCanvas || contentCanvas.width < 1 ||
+        contentCanvas.height < 1) {
       return undefined;
     }
 
-    let renderer: DecryptRevealRenderer | null = null;
+    let renderer: DecryptRevealRenderer|null = null;
     let rafId = 0;
     let readyNotified = false;
-    let resizeObserver: ResizeObserver | null = null;
+    let resizeObserver: ResizeObserver|null = null;
 
-    const readSize = (): { cssWidth: number; cssHeight: number; dpr: number } => {
+    const readSize = (): {cssWidth: number; cssHeight: number; dpr: number} => {
       const rect = canvas.getBoundingClientRect();
       return {
         cssWidth: Math.max(1, rect.width),
@@ -128,7 +130,7 @@ export function useDecryptReveal(props: DecryptRevealRuntimeProps): UseDecryptRe
     };
 
     try {
-      const { cssWidth, cssHeight, dpr } = readSize();
+      const {cssWidth, cssHeight, dpr} = readSize();
       renderer = new DecryptRevealRenderer({
         canvas,
         getProps: () => resolvedRef.current,
@@ -139,7 +141,8 @@ export function useDecryptReveal(props: DecryptRevealRuntimeProps): UseDecryptRe
       // 指针事件（坐标为 canvas CSS 逻辑像素）
       const onPointerMove = (event: PointerEvent): void => {
         const rect = canvas.getBoundingClientRect();
-        renderer?.setPointerTarget(event.clientX - rect.left, event.clientY - rect.top, 1);
+        renderer?.setPointerTarget(
+            event.clientX - rect.left, event.clientY - rect.top, 1);
       };
       const onPointerLeave = (): void => {
         renderer?.clearPointer();
@@ -200,5 +203,5 @@ export function useDecryptReveal(props: DecryptRevealRuntimeProps): UseDecryptRe
     setReloadKey((key) => key + 1);
   }, []);
 
-  return { containerRef, canvasRef, contentCanvasRef, loadState, reload };
+  return {containerRef, canvasRef, contentCanvasRef, loadState, reload};
 }

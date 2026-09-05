@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-import { getDeviceType, type DeviceType } from '@/utils/device';
+import {getDeviceType, type DeviceType} from '@/utils/device';
 
 /** usePerformanceMode 返回值 */
 export interface PerformanceMode {
@@ -27,9 +27,12 @@ const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
  * 组件中据此切换 CSS class（如关闭 transition / backdrop-filter）。
  */
 export function usePerformanceMode(): PerformanceMode {
-  const [deviceType, setDeviceType] = useState<DeviceType>(() => getDeviceType());
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(() =>
-    typeof window === 'undefined' ? false : window.matchMedia(REDUCED_MOTION_QUERY).matches,
+  const [deviceType, setDeviceType] =
+      useState<DeviceType>(() => getDeviceType());
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(
+      () => typeof window === 'undefined' ?
+          false :
+          window.matchMedia(REDUCED_MOTION_QUERY).matches,
   );
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export function usePerformanceMode(): PerformanceMode {
     };
     updateDeviceType();
 
-    let mediaQuery: MediaQueryList | null = null;
+    let mediaQuery: MediaQueryList|null = null;
     const updateMotionPreference = () => {
       setPrefersReducedMotion(mediaQuery?.matches ?? false);
     };

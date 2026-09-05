@@ -1,4 +1,4 @@
-import type { ScraperScript } from './base-scraper';
+import type {ScraperScript} from './base-scraper';
 
 /** 模拟延迟（毫秒），便于观察缓存命中/未命中的效果 */
 const MOCK_DELAY_MS = 300;
@@ -23,9 +23,9 @@ export const exampleScraper: ScraperScript = {
       generatedAt: new Date().toISOString(),
       message: 'Hello from example scraper (mock data)',
       items: [
-        { id: 1, name: '示例条目 A' },
-        { id: 2, name: '示例条目 B' },
-        { id: 3, name: '示例条目 C' },
+        {id: 1, name: '示例条目 A'},
+        {id: 2, name: '示例条目 B'},
+        {id: 3, name: '示例条目 C'},
       ],
     };
   },

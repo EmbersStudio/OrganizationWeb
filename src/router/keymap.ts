@@ -10,6 +10,6 @@ export const KEY_NAV_MAP: Readonly<Record<string, string>> = {
 };
 
 /** 将按键（小写）转换为目标页面 id；未配置返回 undefined */
-export function getPageIdForKey(key: string): string | undefined {
+export function getPageIdForKey(key: string): string|undefined {
   return KEY_NAV_MAP[key];
 }

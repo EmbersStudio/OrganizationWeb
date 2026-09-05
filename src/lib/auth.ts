@@ -11,11 +11,10 @@
  * Cloudflare 机密变量注入，禁止硬编码。
  */
 
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { drizzle } from 'drizzle-orm/d1';
-
 import * as schema from '@/db/schema';
+import {betterAuth} from 'better-auth';
+import {drizzleAdapter} from 'better-auth/adapters/drizzle';
+import {drizzle} from 'drizzle-orm/d1';
 
 /** 供 auth() 使用的最小环境类型（来自 CloudflareEnv 全局类型） */
 export interface AuthEnv {
@@ -29,8 +28,9 @@ export interface AuthEnv {
 }
 
 /** 从环境对象与进程环境读取字符串变量 */
-function pickSecret(env: AuthEnv): string | undefined {
-  return env.BETTER_AUTH_SECRET ?? env.AUTH_SECRET ?? process.env.BETTER_AUTH_SECRET ?? process.env.AUTH_SECRET;
+function pickSecret(env: AuthEnv): string|undefined {
+  return env.BETTER_AUTH_SECRET ?? env.AUTH_SECRET ??
+      process.env.BETTER_AUTH_SECRET ?? process.env.AUTH_SECRET;
 }
 
 /**
@@ -42,24 +42,27 @@ function pickSecret(env: AuthEnv): string | undefined {
 export function auth(env: AuthEnv) {
   const secret = pickSecret(env);
   if (!secret) {
-    throw new Error('[Auth] 缺少 BETTER_AUTH_SECRET（或 AUTH_SECRET），请在 .dev.vars / Cloudflare 变量中配置');
+    throw new Error(
+        '[Auth] 缺少 BETTER_AUTH_SECRET（或 AUTH_SECRET），请在 .dev.vars / Cloudflare 变量中配置');
   }
 
   const baseURL = env.BETTER_AUTH_URL ?? process.env.BETTER_AUTH_URL;
-  const trustedOrigins = (env.BETTER_AUTH_TRUSTED_ORIGINS ?? process.env.BETTER_AUTH_TRUSTED_ORIGINS)
-    ?.split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const trustedOrigins = (env.BETTER_AUTH_TRUSTED_ORIGINS ??
+                          process.env.BETTER_AUTH_TRUSTED_ORIGINS)
+                             ?.split(',')
+                             .map((item) => item.trim())
+                             .filter(Boolean);
 
   const githubClientId = env.GITHUB_CLIENT_ID ?? process.env.GITHUB_CLIENT_ID;
-  const githubClientSecret = env.GITHUB_CLIENT_SECRET ?? process.env.GITHUB_CLIENT_SECRET;
+  const githubClientSecret =
+      env.GITHUB_CLIENT_SECRET ?? process.env.GITHUB_CLIENT_SECRET;
 
   return betterAuth({
     appName: 'EmbersStudio',
     secret,
-    ...(baseURL ? { baseURL } : {}),
-    ...(trustedOrigins && trustedOrigins.length > 0 ? { trustedOrigins } : {}),
-    database: drizzleAdapter(drizzle(env.DB), { provider: 'sqlite', schema }),
+    ...(baseURL ? {baseURL} : {}),
+    ...(trustedOrigins && trustedOrigins.length > 0 ? {trustedOrigins} : {}),
+    database: drizzleAdapter(drizzle(env.DB), {provider: 'sqlite', schema}),
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
@@ -67,30 +70,29 @@ export function auth(env: AuthEnv) {
       maxPasswordLength: 128,
       // 示例实现：将密码重置链接输出到日志。
       // 生产环境请替换为真实的邮件服务（如 Resend / SendGrid）。
-      sendResetPassword: async ({ user, url }) => {
+      sendResetPassword: async ({user, url}) => {
         console.log(`[Auth] 密码重置链接（${user.email}）: ${url}`);
       },
     },
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
-      expiresIn: 60 * 60, // 1 小时
+      expiresIn: 60 * 60,  // 1 小时
       // 示例实现：将验证链接输出到日志。
       // 生产环境请替换为真实的邮件服务。
-      sendVerificationEmail: async ({ user, url }) => {
+      sendVerificationEmail: async ({user, url}) => {
         console.log(`[Auth] 邮箱验证链接（${user.email}）: ${url}`);
       },
     },
-    ...(githubClientId && githubClientSecret
-      ? {
-          socialProviders: {
-            github: {
-              clientId: githubClientId,
-              clientSecret: githubClientSecret,
-            },
-          },
-        }
-      : {}),
+    ...(githubClientId && githubClientSecret ? {
+      socialProviders: {
+        github: {
+          clientId: githubClientId,
+          clientSecret: githubClientSecret,
+        },
+      },
+    } :
+                                               {}),
   });
 }
 

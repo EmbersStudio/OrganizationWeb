@@ -1,12 +1,13 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare';
+import {getCloudflareContext} from '@opennextjs/cloudflare';
 
 /**
  * 简化版 KV 命名空间接口（与 Cloudflare KVNamespace 结构兼容，
  * 便于本地开发时使用内存模拟实现）。
  */
 export interface KVLike {
-  get(key: string): Promise<string | null>;
-  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
+  get(key: string): Promise<string|null>;
+  put(key: string, value: string,
+      options?: {expirationTtl?: number}): Promise<void>;
 }
 
 declare global {
@@ -34,7 +35,7 @@ class MemoryKVStore {
   private store = new Map<string, MemoryEntry>();
 
   /** 读取值；已过期或不存在时返回 null */
-  async get(key: string): Promise<string | null> {
+  async get(key: string): Promise<string|null> {
     const entry = this.store.get(key);
     if (!entry) {
       return null;
@@ -47,15 +48,18 @@ class MemoryKVStore {
   }
 
   /** 写入值，可选 TTL（秒） */
-  async put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void> {
-    const expiresAt = options?.expirationTtl ? Date.now() + options.expirationTtl * 1000 : Number.POSITIVE_INFINITY;
-    this.store.set(key, { value, expiresAt });
+  async put(key: string, value: string, options?: {expirationTtl?: number}):
+      Promise<void> {
+    const expiresAt = options?.expirationTtl ?
+        Date.now() + options.expirationTtl * 1000 :
+        Number.POSITIVE_INFINITY;
+    this.store.set(key, {value, expiresAt});
   }
 }
 
-let memoryStore: MemoryKVStore | null = null;
+let memoryStore: MemoryKVStore|null = null;
 /** 已解析的 KV 绑定；undefined=尚未解析，null=使用内存模拟 */
-let resolvedBinding: KVLike | null | undefined;
+let resolvedBinding: KVLike|null|undefined;
 
 /** 获取（并按需创建）内存模拟存储 */
 function getMemoryStore(): MemoryKVStore {
@@ -71,23 +75,26 @@ function getMemoryStore(): MemoryKVStore {
  * - 本地 Node 环境（getCloudflareContext 不可用）返回 null，改用内存模拟。
  * 结果会缓存，避免每次请求重复解析。
  */
-async function resolveBinding(): Promise<KVLike | null> {
+async function resolveBinding(): Promise<KVLike|null> {
   if (resolvedBinding !== undefined) {
     return resolvedBinding;
   }
 
   try {
-    const ctx = await getCloudflareContext({ async: true });
+    const ctx = await getCloudflareContext({async: true});
     const binding = ctx.env[KV_BINDING_NAME];
     if (binding) {
       console.log(`[KV] Cloudflare KV binding resolved: ${KV_BINDING_NAME}`);
       resolvedBinding = binding;
       return binding;
     }
-    console.warn(`[KV] Binding "${KV_BINDING_NAME}" 未在环境中配置，改用内存模拟`);
+    console.warn(
+        `[KV] Binding "${KV_BINDING_NAME}" 未在环境中配置，改用内存模拟`);
   } catch (error) {
     console.log(
-      `[KV] Cloudflare context 不可用（${error instanceof Error ? error.message : String(error)}），改用内存模拟`,
+        `[KV] Cloudflare context 不可用（${
+            error instanceof Error ? error.message :
+                                     String(error)}），改用内存模拟`,
     );
   }
 
@@ -101,7 +108,7 @@ async function resolveBinding(): Promise<KVLike | null> {
  * @param key 缓存键
  * @returns 缓存值字符串；未命中或已过期时返回 null
  */
-export async function kvGet(key: string): Promise<string | null> {
+export async function kvGet(key: string): Promise<string|null> {
   const kv = await resolveBinding();
   if (kv) {
     const value = await kv.get(key);
@@ -120,13 +127,16 @@ export async function kvGet(key: string): Promise<string | null> {
  * @param value 缓存值（建议传入 JSON 字符串）
  * @param ttlSeconds 过期时间（秒）；不传则永不过期
  */
-export async function kvSet(key: string, value: string, ttlSeconds?: number): Promise<void> {
+export async function kvSet(
+    key: string, value: string, ttlSeconds?: number): Promise<void> {
   const kv = await resolveBinding();
   if (kv) {
-    await kv.put(key, value, ttlSeconds ? { expirationTtl: ttlSeconds } : undefined);
+    await kv.put(
+        key, value, ttlSeconds ? {expirationTtl: ttlSeconds} : undefined);
     console.log(`[KV] put "${key}" (ttl=${ttlSeconds ?? 'none'}s)`);
     return;
   }
-  await getMemoryStore().put(key, value, ttlSeconds ? { expirationTtl: ttlSeconds } : undefined);
+  await getMemoryStore().put(
+      key, value, ttlSeconds ? {expirationTtl: ttlSeconds} : undefined);
   console.log(`[KV] memory put "${key}" (ttl=${ttlSeconds ?? 'none'}s)`);
 }

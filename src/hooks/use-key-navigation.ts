@@ -1,18 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import {useEffect} from 'react';
+import {usePathname, useRouter} from 'next/navigation';
 
-import { getPageIdForKey } from '@/router/keymap';
-import { getPagePath } from '@/router/routes';
+import {getPageIdForKey} from '@/router/keymap';
+import {getPagePath} from '@/router/routes';
 
 /** 需要忽略快捷键的输入类元素（避免在输入框中触发跳转） */
-function isEditableTarget(target: EventTarget | null): boolean {
+function isEditableTarget(target: EventTarget|null): boolean {
   if (!(target instanceof HTMLElement)) {
     return false;
   }
   const tag = target.tagName;
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
+      target.isContentEditable;
 }
 
 /**

@@ -1,19 +1,19 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import {useCallback, useLayoutEffect, useMemo, useRef, useState, type RefObject} from 'react';
 
 /** useOverflowDetection 选项 */
 export interface UseOverflowDetectionOptions<T extends HTMLElement> {
   /** 可滚动/可容纳子项的容器元素引用（测量 clientWidth） */
-  containerRef: RefObject<T | null>;
+  containerRef: RefObject<T|null>;
   /** 子项元素引用表（id -> element） */
-  itemRefs: RefObject<Map<string, T | null>>;
+  itemRefs: RefObject<Map<string, T|null>>;
   /** 子项 id 的有序列表（DOM 顺序即折叠顺序） */
   itemIds: readonly string[];
   /** 水平保留的像素余量（防止浮点/边框造成的抖动），默认 4 */
   slack?: number;
   /** 文本/字号等影响宽度的因素变化时传入新值，触发全部重新测量 */
-  remeasureKey?: string | number;
+  remeasureKey?: string|number;
 }
 
 /** useOverflowDetection 返回值 */
@@ -48,7 +48,8 @@ export function useOverflowDetection<T extends HTMLElement>({
 
   const commitHidden = useCallback((next: readonly string[]) => {
     const current = hiddenRef.current;
-    const same = current.length === next.length && current.every((id, index) => id === next[index]);
+    const same = current.length === next.length &&
+        current.every((id, index) => id === next[index]);
     if (same) {
       return;
     }
@@ -113,7 +114,9 @@ export function useOverflowDetection<T extends HTMLElement>({
     };
   }, [containerRef, hiddenIds, recalculate, remeasureKey]);
 
-  const visibleIds = useMemo(() => itemIds.filter((id) => !hiddenIds.includes(id)), [hiddenIds, itemIds]);
+  const visibleIds = useMemo(
+      () => itemIds.filter((id) => !hiddenIds.includes(id)),
+      [hiddenIds, itemIds]);
 
   return {
     hiddenIds,

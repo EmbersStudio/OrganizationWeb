@@ -5,10 +5,9 @@
  * 再通过请求 Cookie 读取当前会话；未登录返回 null。
  */
 
-import { getCloudflareContext } from '@opennextjs/cloudflare';
-import { headers } from 'next/headers';
-
-import { auth } from '@/lib/auth';
+import {auth} from '@/lib/auth';
+import {getCloudflareContext} from '@opennextjs/cloudflare';
+import {headers} from 'next/headers';
 
 /**
  * 读取当前请求对应的服务端会话。
@@ -16,8 +15,8 @@ import { auth } from '@/lib/auth';
  * @returns 会话与用户信息；未登录时为 null
  */
 export async function getServerSession() {
-  const { env } = await getCloudflareContext({ async: true });
+  const {env} = await getCloudflareContext({async: true});
   const headerStore = await headers();
   const authInstance = auth(env);
-  return authInstance.api.getSession({ headers: new Headers(headerStore) });
+  return authInstance.api.getSession({headers: new Headers(headerStore)});
 }

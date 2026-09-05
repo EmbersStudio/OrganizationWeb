@@ -1,8 +1,7 @@
-import { NextResponse } from 'next/server';
-
-import { cacheConfig } from '@config/cache';
-import { scripts } from '@config/scripts';
-import { getCachedOrFetch } from '@/lib/cache-manager';
+import {getCachedOrFetch} from '@/lib/cache-manager';
+import {cacheConfig} from '@config/cache';
+import {scripts} from '@config/scripts';
+import {NextResponse} from 'next/server';
 
 /** 强制动态渲染，确保每次请求都走服务端逻辑 */
 export const dynamic = 'force-dynamic';
@@ -28,27 +27,31 @@ export async function GET(request: Request) {
   const script = scripts.find((item) => item.name === scriptName);
   if (!script) {
     console.warn(`[API] 脚本不存在: ${scriptName}`);
-    return NextResponse.json({ error: `Unknown script: ${scriptName}` }, { status: 404 });
+    return NextResponse.json(
+        {error: `Unknown script: ${scriptName}`}, {status: 404});
   }
   if (!script.enabled) {
     console.warn(`[API] 脚本已禁用: ${scriptName}`);
-    return NextResponse.json({ error: `Script disabled: ${scriptName}` }, { status: 403 });
+    return NextResponse.json(
+        {error: `Script disabled: ${scriptName}`}, {status: 403});
   }
 
   // 缓存优先逻辑（cache-manager 封装）
   try {
     const cacheKey = `${CACHE_KEY_PREFIX}${scriptName}`;
-    const { source, data } = await getCachedOrFetch(cacheKey, () => script.scrape(), cacheConfig.ttl);
+    const {source, data} = await getCachedOrFetch(
+        cacheKey, () => script.scrape(), cacheConfig.ttl);
     console.log(`[API] 请求完成 (script=${scriptName}, source=${source})`);
-    return NextResponse.json({ source, data }, { headers: { 'X-Cache-Source': source } });
+    return NextResponse.json(
+        {source, data}, {headers: {'X-Cache-Source': source}});
   } catch (error) {
     console.error(`[API] 脚本执行失败: ${scriptName}`, error);
     return NextResponse.json(
-      {
-        error: 'Script execution failed',
-        detail: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 },
+        {
+          error: 'Script execution failed',
+          detail: error instanceof Error ? error.message : String(error),
+        },
+        {status: 500},
     );
   }
 }
