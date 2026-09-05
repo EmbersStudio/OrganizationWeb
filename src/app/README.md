@@ -11,13 +11,36 @@ src/app/
 ├── page.tsx                # 首页（/）→ 渲染 src/views/home/HomePage
 ├── about/
 │   └── page.tsx            # 关于页（/about）→ 渲染 src/views/about/AboutPage
-└── api/                    # 后端接口（/api/data，缓存优先 + 爬虫脚本）
+├── login/
+│   └── page.tsx            # 登录页（/login）→ 渲染 src/views/auth/AuthView
+├── register/
+│   └── page.tsx            # 注册页（/register）→ 渲染 src/views/auth/AuthView
+├── dashboard/
+│   └── page.tsx            # 受保护页（/dashboard）→ 渲染 src/views/dashboard/DashboardView
+└── api/
+    ├── data/
+    │   └── route.ts        # 数据接口（/api/data，缓存优先 + 爬虫脚本）
+    └── auth/
+        └── [...all]/
+            └── route.ts    # Better Auth 认证端点（/api/auth/*）
 src/views/                  # 页面组件（每个页面一个文件夹：TSX + CSS Module）
 src/components/             # 公共组件（如 keyboard-navigator）
 src/hooks/                  # 自定义 Hooks（如 use-key-navigation）
 src/router/                 # 路由注册表 routes.tsx + 快捷键映射 keymap.ts
 src/styles/                 # 全局样式（globals.css + custom/theme.css）
 ```
+
+## 认证相关页面（/login /register /dashboard）
+
+- 认证页面为**动态路由**（`export const dynamic = 'force-dynamic'`），通过
+  `getServerSession()`（`src/lib/session.ts`）读取 Cookie 对应会话；
+- 服务端组件会读取 Cloudflare 环境（`getCloudflareContext()`），本地开发时由
+  `next.config.ts` 中的 `initOpenNextCloudflareForDev()` 提供本地 D1；
+- `/dashboard` 未登录时 307 重定向到 `/login`；已登录访问 `/login`、`/register`
+  时重定向到 `/dashboard`；
+- 认证页面属于“会话驱动页面”，不会出现在顶部导航/快捷键中，因此**不注册到**
+  `src/router/routes.tsx` 的 `PAGE_REGISTRY`（与首页/关于页不同）；
+- 完整说明见仓库根目录 [docs/auth-guide.md](../../docs/auth-guide.md)。
 
 ## 页面渲染机制
 
@@ -65,4 +88,5 @@ src/styles/                 # 全局样式（globals.css + custom/theme.css）
 
 - 页面保持服务端渲染（默认 RSC），HTML 直接可被爬虫抓取；不要在客户端组件中放置 `metadata`；
 - `src/views/**` 中组件如无交互需求，保持为服务端组件（无需 `'use client'`）；
-- 新增页面务必在 `routes.tsx` 注册，保证导航/快捷键/文档与路由同步。
+- 常规页面（出现在导航/快捷键中）务必在 `routes.tsx` 注册；会话驱动的认证页
+  （login / register / dashboard）属于例外，无需注册导航，但需保持 `dynamic = 'force-dynamic'`。

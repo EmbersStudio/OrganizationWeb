@@ -34,6 +34,7 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
   无 HTML 模板字符串、无内联/手动 `<script>` 标签（Cloudflare RUM 由边缘自动注入，仓库不手动干预）；
 - **后端**：Next.js Route Handlers（`/api/data`）+ 可扩展爬虫脚本框架；
 - **缓存**：Cloudflare KV（缓存优先模式，本地开发自动使用内存模拟）；
+- **认证**：Better Auth + Cloudflare D1（邮箱密码注册/登录、服务端会话、邮箱验证，可选 GitHub OAuth）；
 - **导航/交互**：统一顶部导航栏（基于 Card/Button/Dropdown 元件，支持激活页下划线、溢出折叠“更多”菜单）
   与键盘快捷键（`h` 首页 / `a` 关于页）；
 - **国际化**：内置轻量 i18n（`src/locales` 中英文案 + `I18nProvider`），导航栏语言切换即时生效并持久化；
@@ -47,18 +48,20 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
 
 ## 二、功能特性与技术栈
 
-| 领域     | 技术                                                                      |
-| -------- | ------------------------------------------------------------------------- |
-| 前端     | Next.js 16 (App Router)、React 19、TypeScript、CSS Modules                |
-| 后端     | Next.js Route Handlers（`/api/data`）、爬虫脚本框架（ScraperScript 接口） |
-| 缓存     | Cloudflare KV（缓存优先；`USE_CACHE=false` 切换实时抓取）                 |
-| 部署     | OpenNext（`@opennextjs/cloudflare`）+ Wrangler                            |
-| 代码规范 | ESLint、Prettier、JSDoc、约定式提交（Conventional Commits）               |
+| 领域     | 技术                                                                       |
+| -------- | -------------------------------------------------------------------------- |
+| 前端     | Next.js 16 (App Router)、React 19、TypeScript、CSS Modules                 |
+| 后端     | Next.js Route Handlers（`/api/data`）、爬虫脚本框架（ScraperScript 接口）  |
+| 缓存     | Cloudflare KV（缓存优先；`USE_CACHE=false` 切换实时抓取）                  |
+| 认证     | Better Auth + Cloudflare D1（注册/登录/会话、邮箱验证、可选 GitHub OAuth） |
+| 部署     | OpenNext（`@opennextjs/cloudflare`）+ Wrangler                             |
+| 代码规范 | ESLint、Prettier、JSDoc、约定式提交（Conventional Commits）                |
 
 主要特性：
 
 - **纯 TypeScript 页面组件**：`src/views/` 下每个页面一个文件夹（TSX + CSS Module），路由注册表统一管理页面元信息；
 - **缓存优先数据接口**：`GET /api/data?script=<name>` 先查 KV，命中直接返回；未命中执行脚本并写缓存；
+- **完整认证链路**：Better Auth + Cloudflare D1（注册/登录/登出/会话/邮箱验证，可选 GitHub OAuth），见 [docs/auth-guide.md](./docs/auth-guide.md)；
 - **爬虫脚本框架**：在 `src/scripts/` 实现 `ScraperScript` 并注册到 `config/scripts.ts` 即可扩展；
 - **键盘快捷键**：`src/router/keymap.ts` 一处配置，全局监听跳转页面；
 - **UI 元件**：`Button` / `Card` / `Dropdown` 基础元件库（`src/components/ui/`），每个元件自带默认 CSS Module 样式；
@@ -75,10 +78,14 @@ EmbersStudio（余烬工作室）组织官网，基于 **Next.js (App Router) + 
 # 1. 安装依赖
 npm install
 
-# 2. 本地开发（http://localhost:3000）
+# 2. 准备认证环境变量并应用本地 D1 迁移（认证功能需要）
+cp .dev.vars.example .dev.vars   # Windows: copy .dev.vars.example .dev.vars
+npm run db:migrate:local
+
+# 3. 本地开发（http://localhost:3000）
 npm run dev
 
-# 3. 代码检查
+# 4. 代码检查
 npm run typecheck  # TypeScript 类型检查
 npm run lint       # ESLint 检查
 npm run format     # Prettier 格式化
@@ -151,6 +158,8 @@ curl "https://<your-domain>/api/data?script=example"
 | `npm run start`                   | 本地运行生产构建                |
 | `npm run preview`                 | Wrangler 本地预览               |
 | `npm run deploy`                  | 部署到 Cloudflare Workers       |
+| `npm run db:migrate:local`        | 把迁移应用到本地 D1             |
+| `npm run db:migrate:remote`       | 把迁移应用到远程 D1             |
 | `npm run typecheck`               | TypeScript 类型检查             |
 | `npm run lint` / `lint:fix`       | ESLint 检查 / 自动修复          |
 | `npm run format` / `format:check` | Prettier 格式化 / 检查          |
@@ -162,7 +171,9 @@ curl "https://<your-domain>/api/data?script=example"
 ```
 .
 ├── config/                # 全局配置（缓存、爬虫脚本注册表）
+├── docs/                  # 文档（auth-guide.md：认证指南）
 ├── public/                # 静态资源（图片/字体/_headers）
+├── migrations/            # D1 数据库迁移（drizzle-kit 生成）
 ├── src/
 │   ├── app/               # Next.js App Router（page.tsx / layout.tsx / api/）
 │   ├── views/             # 页面组件（index.ts 统一导出；每个页面一个文件夹：TSX + CSS Module）
@@ -174,14 +185,16 @@ curl "https://<your-domain>/api/data?script=example"
 │   ├── utils/             # 工具函数（device.ts 设备检测）
 │   ├── styles/            # 全局样式（globals.css / custom/theme.css）
 │   ├── types/             # 共享类型定义
-│   ├── lib/               # 核心库（KV、缓存管理器等）
+│   ├── lib/               # 核心库（KV、缓存管理器、Better Auth 配置等）
 │   └── scripts/           # 爬虫脚本框架
-├── wrangler.toml          # Cloudflare 配置（KV 绑定等）
+├── .dev.vars.example      # Cloudflare 本地开发变量模板（复制为 .dev.vars）
+├── wrangler.toml          # Cloudflare 配置（KV / D1 绑定等）
 ├── BUILD_GUIDE.md         # ★ 详细开发指南
 └── package.json
 ```
 
 > 各目录职责与新增文件的规范详见 [BUILD_GUIDE.md](./BUILD_GUIDE.md)。
+> 认证功能的环境变量、端点与部署说明详见 [docs/auth-guide.md](./docs/auth-guide.md)。
 
 ---
 
