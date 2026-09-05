@@ -75,7 +75,11 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+          command: deploy \
+            --var BETTER_AUTH_SECRET:${{ secrets.BETTER_AUTH_SECRET }} \
+            --var GITHUB_CLIENT_SECRET:${{ secrets.GITHUB_CLIENT_SECRET }} \
+            --var BETTER_AUTH_URL:${{ vars.BETTER_AUTH_URL || 'https://embers-studio.crimsonseraph.top' }} \
+            --var GITHUB_CLIENT_ID:${{ vars.GITHUB_CLIENT_ID || 'Ov23liI1eeoAs4O4oeX0' }}
 
       # 部署成功后更新变量
       - name: Update last build commit variable
