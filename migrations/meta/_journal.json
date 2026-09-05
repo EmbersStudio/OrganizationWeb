@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1788594987241,
+      "tag": "0000_striped_vance_astro",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1788595937962,
+      "tag": "0001_add_account_issuer",
+      "breakpoints": true
+    }
+  ]
+}

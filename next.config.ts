@@ -1,4 +1,9 @@
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 import type { NextConfig } from 'next';
+
+// 本地开发（next dev）时通过 Wrangler 平台代理加载 D1/KV 等绑定，
+// 使认证接口可以直接使用 wrangler.toml 中声明的本地 D1 数据库。
+initOpenNextCloudflareForDev();
 
 /**
  * Next.js 配置。

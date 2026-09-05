@@ -1,0 +1,67 @@
+.pageWrap {
+  min-height: calc(100vh - var(--site-nav-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.25rem;
+}
+
+.dashboardCard {
+  width: 100%;
+  max-width: 30rem;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+}
+
+.subtitle {
+  margin: 0 0 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.alertError {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(255, 92, 92, 0.45);
+  border-radius: 0.5rem;
+  background: rgba(255, 92, 92, 0.12);
+  color: #ff9d9d;
+  font-size: 0.85rem;
+}
+
+.infoList {
+  margin: 0 0 1.5rem;
+  border-top: 1px solid #2a3040;
+}
+
+.infoRow {
+  display: flex;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #2a3040;
+  font-size: 0.9rem;
+}
+
+.infoRow dt {
+  flex: 0 0 7rem;
+  color: var(--color-text-muted);
+}
+
+.infoRow dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.homeLink {
+  color: inherit;
+  text-decoration: none;
+}

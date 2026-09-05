@@ -17,7 +17,9 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:migrate:local": "wrangler d1 migrations apply organization_web --local",
+    "db:migrate:remote": "wrangler d1 migrations apply organization_web --remote"
   },
   "dependencies": {
     "better-auth": "^1.7.2",
