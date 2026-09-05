@@ -11,3 +11,9 @@ assets = { directory = ".open-next/assets", binding = "ASSETS" }
 [[kv_namespaces]]
 binding = "DATA_CACHE"
 id = "e00145bf69d847f8a4f97740f74d35c6"
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB"
+database_name = "organization_web"
+database_id = "798203cb-d1ea-4ad9-8f2f-b738aa00c937"

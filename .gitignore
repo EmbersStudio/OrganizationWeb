@@ -48,3 +48,7 @@ next-env.d.ts
 # cloudflare / wrangler
 .wrangler
 .dev.vars
+
+# 数据库文件
+*.db
+*.sqlite
