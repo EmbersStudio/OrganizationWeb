@@ -49,6 +49,12 @@ export interface StarSkyConfig {
   interactive?: boolean;
   /** 是否让星星逐帧随机闪烁透明度，默认 true */
   twinkle?: boolean;
+  /** 最小透明度，默认为 0.5 */
+  twinkleMin?: number;
+  /** 最大透明度，默认为 1.0 */
+  twinkleMax?: number;
+  /** 闪烁频率（Hz），默认为 1.5 */
+  twinkleSpeed?: number;
   /** 背景三段渐变颜色，默认与 HTMLTest/index.html 相同 */
   backgroundColors?: readonly [string, string, string];
   /** 自定义完整 CSS background（优先级高于 backgroundColors） */
@@ -66,6 +72,9 @@ export const DEFAULT_STAR_SKY_CONFIG = {
   center: { x: 'mid', y: 'mid' },
   interactive: true,
   twinkle: true,
+  twinkleMin: 0.5,
+  twinkleMax: 1.0,
+  twinkleSpeed: 1.5,
   backgroundColors: ['#0a1432', 'rgba(40, 10, 60, 0.9)', '#05050f'] as const,
 } as const;
 
@@ -153,11 +162,12 @@ function buildRootStyle(
   return { ...vars, ...style };
 }
 
-/** 星星对象：x/y 为坐标（CSS 像素），z 为纵深缩放因子 */
+/** 星星对象：x/y 为坐标（CSS 像素），z 为纵深缩放因子，phase 为闪烁用随机相位 */
 interface Star {
   x: number;
   y: number;
   z: number;
+  phase: number;
 }
 
 /**
@@ -187,6 +197,9 @@ export function StarSky({
   center,
   interactive,
   twinkle,
+  twinkleMin,
+  twinkleMax,
+  twinkleSpeed,
   backgroundColors,
   background,
   ...rest
@@ -220,6 +233,9 @@ export function StarSky({
     const depthSpeed = (speed ?? DEFAULT_STAR_SKY_CONFIG.speed) * BASE_DEPTH_SPEED;
     const rotateSpeed = (speed ?? DEFAULT_STAR_SKY_CONFIG.speed) * BASE_ROTATE_SPEED;
     const withTwinkle = twinkle ?? DEFAULT_STAR_SKY_CONFIG.twinkle;
+    const minAlpha = twinkleMin ?? DEFAULT_STAR_SKY_CONFIG.twinkleMin;
+    const maxAlpha = twinkleMax ?? DEFAULT_STAR_SKY_CONFIG.twinkleMax;
+    const freq = twinkleSpeed ?? DEFAULT_STAR_SKY_CONFIG.twinkleSpeed;
     const withInteractive = interactive ?? DEFAULT_STAR_SKY_CONFIG.interactive;
 
     // 星星数量：未指定时按 (容器宽 + 容器高) / 8 计算
@@ -250,6 +266,7 @@ export function StarSky({
         x: 0,
         y: 0,
         z: minScale + Math.random() * (1 - minScale),
+        phase: Math.random() * 2 * Math.PI,
       }));
     };
 
@@ -415,8 +432,25 @@ export function StarSky({
     const draw = (): void => {
       context.clearRect(0, 0, cssWidth, cssHeight);
       context.lineCap = 'round';
+
+      // 若系统偏好减少动画，则使用静态（不闪烁）
+      const reduced = isReducedMotion();
+      // 获取全局时间（秒）
+      const now = performance.now() / 1000;
       for (const star of stars) {
-        context.globalAlpha = withTwinkle ? 0.5 + 0.5 * Math.random() : 1;
+        let alpha = 1; // 默认不透明
+
+        if (!reduced && withTwinkle) {
+          // 保证 min <= max，并避免除以零
+          const range = Math.max(0, maxAlpha - minAlpha);
+          // 正弦波映射到 [0,1] 然后缩放到 [min, max]
+          const sinVal = 0.5 + 0.5 * Math.sin(now * freq * 2 * Math.PI + star.phase);
+          alpha = minAlpha + range * sinVal;
+          // 钳制安全范围（避免浮点误差）
+          alpha = Math.min(maxAlpha, Math.max(minAlpha, alpha));
+        }
+
+        context.globalAlpha = alpha;
         context.strokeStyle = color;
         context.lineWidth = lineSize * star.z;
         context.beginPath();
@@ -549,6 +583,9 @@ export function StarSky({
     centerY,
     interactive,
     twinkle,
+    twinkleMin,
+    twinkleMax,
+    twinkleSpeed,
   ]);
 
   return (
