@@ -33,6 +33,10 @@ export default function HomePage() {
         mode="expand"
         center={{ x: 'left', y: 'bottom' }}
         interactive={false}
+        twinkle={true}
+        twinkleMin={0.2}
+        twinkleMax={1.0}
+        twinkleSpeed={0.25}
         backgroundColors={['#0a1432', '#3a1050', '#05050f']}
         contentClassName={styles.starSkyContent}
       >
