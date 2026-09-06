@@ -40,7 +40,10 @@ import StarSky from '@/components/ui/starsky';
 | `mode`              | `StarSkyMode`              | `expand`                     | 整体运动模式：`expand` / `shrink` / `rotate-cw` / `rotate-ccw`                   |
 | `center`            | `StarSkyCenter`            | `{ x: 'mid', y: 'mid' }`     | 运动中心点，见下方关键字说明                                                     |
 | `interactive`       | `boolean`                  | `true`                       | 是否响应鼠标/触摸产生视差漂移                                                    |
-| `twinkle`           | `boolean`                  | `true`                       | 是否让星星逐帧随机闪烁                                                           |
+| `twinkle`           | `boolean`                  | `true`                       | 是否启用星星闪烁（平滑正弦波）                                                    |
+| `twinkleMin`        | `number`                   | `0.5`                        | 闪烁时最小透明度（0~1）                                                          |
+| `twinkleMax`        | `number`                   | `1.0`                        | 闪烁时最大透明度（0~1）                                                          |
+| `twinkleSpeed`      | `number`                   | `1.5`                        | 闪烁频率（Hz），即每秒完整周期数                                                 |
 | `backgroundColors`  | `[string, string, string]` | 参考示例三段渐变             | 背景渐变的三段颜色                                                               |
 | `background`        | `string`                   | 无                           | 自定义完整 CSS `background`，优先级最高                                          |
 
@@ -169,7 +172,10 @@ import { StarSky } from '@/components/ui/starsky';
   starMinScale={0.35}
   speed={2} // 缩放系数：整体运动快 2 倍
   interactive={false} // 关闭鼠标视差
-  twinkle={false} // 关闭逐帧闪烁
+  twinkle={true}
+  twinkleMin={0.3}     // 闪烁最低透明度 0.3
+  twinkleMax={0.9}     // 最高透明度 0.9
+  twinkleSpeed={0.8}   // 闪烁频率 0.8 Hz（柔和呼吸）
   backgroundColors={['#1b0a2e', '#31124e', '#0a0614']}
 >
   <p>自定义星空样式</p>
@@ -207,10 +213,10 @@ import { StarSky } from '@/components/ui/starsky';
 
 ## 四、注意事项
 
-1. **动画逻辑仿照参考 HTML**：星星带拖尾；`twinkle` 开启时每帧随机透明度；
+1. **动画逻辑仿照参考 HTML**：星星带拖尾；`twinkle` 启用时，每颗星星的透明度按正弦波独立平滑变化（默认范围 0.5~1.0，频率 1.5 Hz），避免高频随机闪烁，营造呼吸感。可通过 `twinkleMin/Max/Speed` 精细调节。
    鼠标/触摸移动会给星空叠加惯性视差（`interactive` 可关闭）。
    `center` 负责指定运动中心（默认正中），`mode` 负责整体运动方式（默认 `expand` 从中间扩散）。
-2. **系统减少动态效果**：组件监听 `prefers-reduced-motion`，开启时只静态绘制一次星空，不跑动画帧。
+2. **系统减少动态效果**：组件监听 `prefers-reduced-motion`，开启时只静态绘制一次星空，不跑动画帧，同时闪烁也会被禁用。
 3. **高 DPI 适配**：画布按 `window.devicePixelRatio` 放大渲染，尺寸变化通过
    `ResizeObserver`（不支持时回退 `window.resize`）自动重建。
 4. **纯背景需要高度**：容器无内容时依赖默认最小高度或外部尺寸，请结合场景设置
